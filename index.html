@@ -1,4 +1,3 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found]){display:none!important}</style></head><body>
 <title>Say &amp; Spell</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -289,14 +288,6 @@
     padding: 11px 13px;
     font-size: 16px;
   }
-  .field select {
-    width: 100%; border: 1.5px solid var(--border); border-radius: 10px;
-    padding: 11px 13px; font-size: 16px; background: var(--surface); color: var(--ink); font-family: inherit;
-  }
-  .size-row { display:flex; align-items:center; gap:8px; margin:10px 0 2px; font-size:13px; color: var(--ink-secondary); flex-wrap: wrap; }
-  .size-row select { border:1.5px solid var(--border); border-radius:8px; padding:5px 8px; font-size:14px; background: var(--surface); color: var(--ink); font-family: inherit; }
-  .mastery-track { height:6px; border-radius:99px; background: var(--surface-2); overflow:hidden; margin-top:8px; }
-  .mastery-fill { height:100%; background: var(--good); }
   .field textarea { min-height: 130px; resize: vertical; font-family: inherit; }
   .hint { font-size: 12.5px; color: var(--ink-muted); margin-top: 6px; }
 
@@ -460,7 +451,6 @@
     <nav class="nav" id="mainNav">
       <button data-screen="home" aria-current="true">Word Lists</button>
       <button data-screen="history">History</button>
-      <button data-screen="voice">🔊 Voice</button>
     </nav>
   </div>
 
@@ -577,32 +567,6 @@
     </div>
   </section>
 
-  <!-- VOICE -->
-  <section class="screen" id="screen-voice">
-    <div class="section-head" style="margin-top:0;"><h2 style="color:var(--ink); font-family:'Fredoka',sans-serif; font-size:20px;">Reading voice</h2></div>
-    <div class="card" style="padding:18px;">
-      <div class="field">
-        <label for="voiceSelect">Voice</label>
-        <select id="voiceSelect"></select>
-        <div class="hint" id="voiceHint">The most natural-sounding voice on this device is picked automatically. ★ marks the higher-quality ones.</div>
-      </div>
-      <div class="field">
-        <label for="rateSelect">Speed</label>
-        <select id="rateSelect">
-          <option value="0.75">Slow</option>
-          <option value="0.85">A little slow</option>
-          <option value="0.95">Normal</option>
-        </select>
-      </div>
-      <div class="btn-row">
-        <button class="btn btn-primary" id="btnTestVoice">▶ Test voice</button>
-      </div>
-      <div class="banner" style="margin-top:16px;">
-        <strong>Want a much more natural voice?</strong> On iPad or iPhone, open <em>Settings › Accessibility › Spoken Content › Voices › English</em> and download a voice marked <em>Premium</em> or <em>Enhanced</em> (Ava, Zoe or Evan sound great). Then come back here and pick it. On a Mac it's <em>System Settings › Accessibility › Spoken Content › System voice › Manage Voices</em>. In Edge, the “Natural” voices are already the best choice.
-      </div>
-    </div>
-  </section>
-
   <!-- HISTORY -->
   <section class="screen" id="screen-history">
     <div class="section-head" style="margin-top:0;"><h2 style="color:var(--ink); font-family:'Fredoka',sans-serif; font-size:20px;">Practice history</h2></div>
@@ -669,9 +633,6 @@
 
   const Store = {
     async listLists() {
-      return [MASTER_LIST].concat(await this._userLists());
-    },
-    async _userLists() {
       if (db) {
         try {
           const snap = await db.collection("wordlists").orderBy("createdAt", "desc").get();
@@ -757,105 +718,6 @@
     btn.addEventListener("click", () => showScreen(btn.dataset.nav));
   });
 
-  /* ================= built-in master list ================= */
-  const MASTER_ID = "builtin-grade5-master";
-  const MASTER_WORDS = ["ability", "aboard", "absence", "absolutely", "absurd", "abundance", "accent", "accept", "acceptance", "accident", "accidentally", "accommodation", "accompany", "accomplishment", "according", "accurate", "accused", "accustomed", "ache", "acknowledge", "acquaintance", "acre", "activity", "actually", "addition", "address", "adjustment", "admission", "adolescent", "adoption", "advanced", "advantage", "adventure", "advertisement", "affect", "affectionate", "afterwards", "agreeable", "agricultural", "alcohol", "alligator", "allowance", "alphabet", "already", "although", "amazement", "ambulance", "ammunition", "amusement", "anchor", "ancient", "anniversary", "announcement", "annual", "answer", "anxiety", "anxious", "apartment", "apologize", "appearance", "appetite", "application", "appointment", "appreciate", "appropriate", "approval", "approximately", "aquarium", "arduous", "argue", "arrangement", "artificial", "ascended", "assignment", "assistance", "assortment", "astonished", "astronaut", "athletes", "atmosphere", "attendance", "attitude", "attractive", "audience", "auditorium", "authority", "autumn", "available", "awakening", "awful", "bacteria", "baggage", "balloon", "banana", "banquet", "barefooted", "basement", "beautiful", "beggar", "beginning", "behavior", "believe", "bicycle", "bigot", "birthday", "biscuits", "blizzard", "blouse", "bomb", "boundary", "bouquet", "bracelet", "breakfast", "breath", "breathe", "brilliant", "broadcast", "buffalo", "buffoonery", "building", "bulletin", "bureau", "burglar", "burial", "cabbage", "cabinet", "cactus", "cafeteria", "calendar", "campaign", "canary", "candidate", "capable", "career", "carnival", "carpenter", "carriage", "cartoon", "catalogue", "caterpillar", "caution", "ceiling", "celebration", "celery", "cemetery", "century", "certainly", "certificate", "champion", "chemistry", "chocolate", "choir", "chorus", "circulation", "circumstances", "circumstantial", "circus", "citizen", "civilization", "cleanliness", "climate", "coarse", "cocoa", "coconut", "coffee", "combination", "comfortable", "commander", "commercial", "committee", "communicate", "community", "comparison", "competition", "complaint", "completely", "compliment", "concrete", "congratulate", "conquer", "conscience", "consequences", "consideration", "contented", "continually", "convenience", "convention", "conversation", "cooperation", "corruptible", "costume", "courteous", "crayons", "criminal", "criticism", "cucumber", "curiosity", "custodian", "customer", "cylinder", "cynicism", "dandelion", "dangerous", "daughter", "deceived", "decision", "decorate", "decoration", "definite", "definition", "delicious", "delightful", "delivery", "deodorant", "descending", "descent", "description", "descriptive", "desirable", "desperate", "destination", "detective", "deterrence", "diaspora", "dictionary", "difference", "diploma", "disagreeable", "disappear", "disappointment", "discount", "discovered", "dissatisfied", "distinguish", "document", "domestic", "doubtful", "dramatic", "drowned", "dungarees", "earnest", "eclipse", "economical", "education", "effective", "efficient", "eighteen", "elaborate", "electric", "electrically", "elephant", "elevator", "embarrass", "embroidery", "emergency", "employees", "employment", "endurance", "energetic", "engine", "engineer", "enormous", "entertainment", "enthusiastic", "entrance", "envelope", "equipment", "escalate", "especially", "essential", "establish", "examination", "exceedingly", "excellent", "exception", "excitement", "exercise", "exhausted", "expensive", "experience", "explanation", "explosion", "extraordinary", "extremely", "factory", "failure", "familiar", "family", "famous", "fancy", "farming", "fascinated", "fashion", "favorite", "feather", "feature", "february", "federal", "festival", "fiction", "fierce", "figures", "filthily", "finally", "finish", "fixed", "flashlight", "flavor", "float", "fluid", "following", "foolish", "foreign", "forgotten", "formerly", "fortunate", "forward", "fought", "freeze", "freight", "frequent", "friendly", "frighten", "frontier", "fudge", "funeral", "furnace", "furniture", "gallon", "garage", "garbage", "garment", "gasoline", "gathering", "generally", "generation", "generous", "genius", "geography", "ghost", "giant", "giraffe", "glasses", "glorious", "golden", "gorgeous", "gossip", "government", "governor", "graceful", "gradually", "graduation", "grammar", "granite", "grapefruit", "grasshopper", "gratitude", "greatest", "greedy", "groceries", "ground", "guardian", "guessed", "guilty", "guitar", "gymnasium", "hammer", "handkerchief", "handsome", "happiest", "happiness", "hardware", "hatch", "hatchet", "haunted", "headache", "headquarters", "healthful", "healthy", "height", "heroes", "hesitate", "highest", "hippopotamus", "hoping", "hopping", "horrid", "horror", "hospital", "houses", "human", "humorous", "iceberg", "ignorant", "illustrate", "imagination", "imitation", "immediate", "immigrants", "impatient", "important", "impossible", "impression", "improvement", "incident", "including", "inconvenient", "incorrect", "increase", "independence", "independent", "industrial", "industries", "influence", "information", "initial", "injury", "innocent", "inquire", "inspection", "instantly", "institution", "instruction", "instrument", "insulated", "insurance", "intelligence", "intelligent", "interested", "interfere", "interior", "international", "interrupt", "interview", "introduction", "invalid", "invention", "investigation", "invitation", "irrigation", "island", "issue", "jacket", "jealous", "jeopardy", "jewelry", "journey", "jubilant", "juice", "kettle", "kindergarten", "kindly", "kingdom", "kitchen", "knead", "knight", "knitting", "knives", "knowledge", "laboratory", "laborious", "ladder", "language", "languish", "lantern", "laughed", "laundry", "lawyer", "league", "learned", "legislature", "lettuce", "librarian", "library", "license", "lieutenant", "lightning", "liquid", "literature", "location", "lodge", "losing", "lumber", "luncheon", "macaroni", "machine", "machinery", "magazine", "magnificent", "maintain", "majority", "management", "manager", "manicure", "mansion", "manufacture", "manufacturing", "marble", "marriage", "married", "marshmallows", "martyr", "marvelous", "material", "mathematics", "mattress", "meadow", "measles", "measure", "mechanical", "medicine", "medium", "membership", "memory", "mentioned", "merchant", "merely", "message", "messenger", "method", "microscope", "middle", "midnight", "mighty", "military", "million", "mineral", "minister", "minute", "minutes", "mischief", "mischievous", "miserable", "missile", "missionary", "mistake", "mittens", "mixture", "moccasins", "moderate", "moisture", "monotonous", "monument", "mortgage", "mosquito", "motorcycle", "mountain", "movement", "multiplication", "municipal", "museum", "mushrooms", "musician", "mustard", "mysterious", "napkin", "narrow", "national", "naturally", "naughty", "navigation", "necessarily", "necessary", "necessity", "neglected", "neighbor", "neither", "nephew", "nervous", "nonsense", "noticed", "nourishing", "nuisance", "numerous", "nursery", "obedience", "objection", "obliged", "observation", "observe", "obtained", "occasionally", "occupation", "occurrence", "offering", "officers", "omitted", "onions", "operation", "opinion", "opportunities", "opposition", "ordinarily", "organization", "organized", "originally", "oriole", "orphan", "oxygen", "oyster", "package", "pageant", "pajamas", "pamphlets", "papoose", "parachute", "paragraph", "parallel", "parliament", "particular", "particularly", "passage", "pasture", "patience", "peace", "peanuts", "peasants", "peculiar", "pencil", "peninsula", "penmanship", "perfectly", "performance", "perilous", "permission", "personality", "petroleum", "pheasants", "phonograph", "photograph", "physical", "pickle", "picnic", "picture", "piece", "pierce", "pigeon", "pillow", "pineapple", "pioneer", "pistol", "pitcher", "planned", "plantation", "plaster", "plateau", "playground", "pleasant", "please", "pleasure", "pledge", "plentiful", "pneumonia", "pocket", "poisonous", "political", "politics", "popular", "population", "porcupine", "position", "positive", "possess", "possession", "possibilities", "possible", "postage", "postpone", "posture", "poultry", "pounds", "powder", "practically", "practicing", "prairie", "praise", "preamble", "precious", "predicate", "preferred", "prejudice", "preparation", "presence", "preserve", "president", "pressure", "prettier", "previous", "primitive", "principal", "principle", "prisoner", "privilege", "probably", "procedure", "procession", "produce", "product", "production", "profession", "profitable", "prominent", "promotion", "promptly", "pronunciation", "propelled", "property", "proportion", "proposed", "proposition", "prosperous", "protection", "proteins", "provided", "provision", "publication", "pudding", "pumpkin", "puncture", "punishment", "puppies", "purchase", "purpose", "pursuit", "puzzle", "pyramids", "quality", "quantities", "quantity", "quarrel", "quarter", "question", "quickly", "quotation", "quote", "racial", "radiator", "ragged", "rapidly", "rattlesnake", "reader", "reality", "realize", "reasonable", "rebel", "receipt", "receive", "recently", "reception", "recess", "recipe", "recognize", "recommend", "recommendation", "recreation", "reference", "referred", "refreshments", "refrigeration", "refrigerator", "refugees", "refused", "refutation", "registration", "regretted", "relative", "religious", "remarkable", "remembrance", "reminder", "rendered", "representative", "requested", "require", "research", "reservation", "residence", "resolution", "resources", "respectfully", "responsibility", "responsible", "restaurant", "revenge", "revenue", "revolver", "rheumatism", "rooster", "sacrifice", "saddle", "safety", "salary", "sandwiches", "sanitary", "satellite", "satisfaction", "satisfied", "saucer", "sausage", "scaffold", "scarcely", "scarf", "scarlet", "scenery", "scheduled", "scheme", "scientist", "scissors", "scratch", "scribbling", "search", "secretary", "secured", "selection", "selfish", "semester", "separate", "separation", "september", "seriously", "serum", "servant", "several", "shelter", "shepherd", "sheriff", "shining", "shipments", "shopping", "shortage", "shoulder", "shrieking", "signature", "silverware", "sincere", "sincerely", "sincerity", "singular", "situation", "sixty", "skeleton", "skiing", "skillful", "sleigh", "slipper", "smooth", "sneeze", "social", "society", "somersaults", "source", "sparrow", "specialize", "specimen", "speedometer", "spices", "spinach", "splendid", "sprained", "spread", "sprinkle", "square", "squash", "squeak", "squeeze", "standard", "stationary", "stationery", "statue", "steady", "stenographer", "sticky", "stock", "stockings", "stomach", "storage", "straight", "straighten", "strawberries", "strength", "stretch", "struggle", "stubborn", "submarine", "subscribers", "subscription", "substance", "substitute", "subtraction", "succeed", "successful", "suddenly", "sufficient", "suggestion", "superintendent", "supermarket", "superstition", "supervisor", "supplied", "supposed", "surface", "surprise", "surrender", "surround", "surrounded", "swallow", "sweater", "swimming", "sympathize", "sympathy", "syntax", "taught", "teacher", "teaching", "teaspoon", "tedious", "telegram", "telegraph", "telephone", "telescope", "television", "temperature", "temporary", "terrible", "territory", "terrorism", "testimony", "textile", "thanksgiving", "thermometer", "thimble", "thorough", "though", "thought", "thoughtful", "thoughts", "thousand", "thread", "throat", "through", "throughout", "thumb", "thursday", "tickled", "tissues", "toaster", "tobacco", "toboggan", "tomato", "tomorrow", "tongue", "tonsillitis", "tough", "tourist", "tournament", "toward", "tractor", "tragedy", "transferred", "transportation", "traveling", "treasurer", "treatment", "tremble", "trimmed", "triumph", "tropical", "trouble", "trough", "trousers", "tuesday", "typewriter", "umbrella", "unable", "unanimous", "uncertain", "uncomfortable", "unconscious", "unconstitutional", "underneath", "understand", "understanding", "understood", "undoubtedly", "unexpected", "unfortunate", "uniform", "unimportant", "universal", "university", "unnecessary", "unpleasant", "unusual", "usually", "vacant", "vacation", "vaccinated", "vaccination", "valuable", "vanity", "varnish", "vegetable", "vegetation", "vehicle", "venison", "venture", "verdict", "vibration", "vicinity", "victory", "vigorous", "vinegar", "vintage", "visible", "vision", "visitors", "vitamins", "voluntary", "voyage", "vulgar", "washing", "watching", "watermelon", "wealthy", "weapons", "weather", "weaving", "wednesday", "weigh", "weight", "welfare", "whale", "whatever", "wheelbarrow", "which", "while", "whipping", "whiskers", "whisper", "whistle", "wholesale", "wicker", "wigwam", "wilderness", "willow", "winner", "winning", "witch", "witness", "wolves", "woman", "women", "wonderful", "wondering", "wooden", "woolen", "worked", "worried", "worse", "wouldn't", "wrapped", "writing", "written", "wrong", "years", "yeast", "yellow", "yesterday", "yield", "young", "younger", "yourself", "yourselves", "youth", "youthful"];
-
-  const MASTER_LIST = { id: MASTER_ID, name: "Grade 5 Master List", builtin: true, createdAt: "9999", words: MASTER_WORDS.map(w => ({ word: w, sentence: "" })) };
-  const LS_TESTSIZE = "sns_testsize_v1";
-  function getTestSize() { try { return parseInt(localStorage.getItem(LS_TESTSIZE) || "20", 10) || 20; } catch (e) { return 20; } }
-  function setTestSize(n) { try { localStorage.setItem(LS_TESTSIZE, String(n)); } catch (e) {} }
-
-  // Latest result per word across all master-list sessions: true = spelled right last time.
-  function masterStatus(sessions) {
-    const status = {};
-    sessions.filter(s => s.listId === MASTER_ID).sort((a, b) => (a.date || "").localeCompare(b.date || "")).forEach(s => {
-      (s.tested || []).forEach(w => { status[w] = true; });
-      (s.missed || []).forEach(m => { status[m.word] = false; });
-    });
-    return status;
-  }
-  // Build a test batch: up to a third are words she missed last time,
-  // the rest are words she hasn't been tested on yet, then anything else.
-  async function pickMasterBatch(n) {
-    const status = masterStatus(await Store.allSessions());
-    const missed = shuffle(MASTER_WORDS.filter(w => status[w] === false));
-    const unseen = shuffle(MASTER_WORDS.filter(w => !(w in status)));
-    const known = shuffle(MASTER_WORDS.filter(w => status[w] === true));
-    const batch = missed.slice(0, Math.ceil(n / 3));
-    for (const pool of [unseen, missed.slice(batch.length), known]) {
-      for (const w of pool) { if (batch.length >= n) break; batch.push(w); }
-    }
-    return batch.map(w => ({ word: w, sentence: "" }));
-  }
-
-  /* ================= voice choice ================= */
-  const LS_VOICE = "sns_voice_v1";
-  const LS_RATE = "sns_rate_v1";
-  const NOVELTY = /albert|bad news|bahh|bells|boing|bubbles|cellos|good news|jester|organ|superstar|trinoids|whisper|wobble|zarvox|fred|junior|ralph|kathy|grandma|grandpa|rocko|shelley|flo\b|eddy|reed|sandy|hysterical|deranged|pipe/i;
-  let voices = [];
-  function voiceScore(v) {
-    const n = v.name;
-    let s = 0;
-    if (/premium/i.test(n)) s += 100;
-    if (/enhanced/i.test(n)) s += 80;
-    if (/natural|neural/i.test(n)) s += 90;
-    if (/online/i.test(n)) s += 20;
-    if (/^google/i.test(n)) s += 50;
-    if (/\b(ava|zoe|evan|allison|samantha|nathan|joelle|noelle|susan|tom|aria|jenny|guy|michelle)\b/i.test(n)) s += 15;
-    if (/^en[-_]US/i.test(v.lang)) s += 10;
-    else if (/^en[-_](GB|AU|CA|IE)/i.test(v.lang)) s += 4;
-    if (v.localService === false && !/google|online|natural/i.test(n)) s -= 5;
-    return s;
-  }
-  function loadVoices() {
-    if (!("speechSynthesis" in window)) return;
-    voices = window.speechSynthesis.getVoices()
-      .filter(v => /^en/i.test(v.lang) && !NOVELTY.test(v.name))
-      .sort((a, b) => voiceScore(b) - voiceScore(a) || a.name.localeCompare(b.name));
-    renderVoicePicker();
-  }
-  function chosenVoice() {
-    if (!voices.length) return null;
-    let saved = null;
-    try { saved = localStorage.getItem(LS_VOICE); } catch (e) {}
-    return (saved && voices.find(v => v.voiceURI === saved)) || voices[0];
-  }
-  function chosenRate() {
-    try { return parseFloat(localStorage.getItem(LS_RATE) || "0.85") || 0.85; } catch (e) { return 0.85; }
-  }
-  function renderVoicePicker() {
-    const sel = document.getElementById("voiceSelect");
-    if (!sel) return;
-    const cur = chosenVoice();
-    sel.innerHTML = "";
-    if (!voices.length) {
-      const o = document.createElement("option"); o.textContent = "Default voice"; sel.appendChild(o); return;
-    }
-    voices.forEach(v => {
-      const o = document.createElement("option");
-      o.value = v.voiceURI;
-      o.textContent = (voiceScore(v) >= 50 ? "★ " : "") + v.name + " (" + v.lang + ")";
-      if (cur && v.voiceURI === cur.voiceURI) o.selected = true;
-      sel.appendChild(o);
-    });
-    document.getElementById("rateSelect").value = String(chosenRate());
-  }
-  if ("speechSynthesis" in window) {
-    loadVoices();
-    window.speechSynthesis.addEventListener && window.speechSynthesis.addEventListener("voiceschanged", loadVoices);
-  }
-  document.getElementById("voiceSelect").addEventListener("change", e => {
-    try { localStorage.setItem(LS_VOICE, e.target.value); } catch (err) {}
-    speak("Accommodation");
-  });
-  document.getElementById("rateSelect").addEventListener("change", e => {
-    try { localStorage.setItem(LS_RATE, e.target.value); } catch (err) {}
-  });
-  document.getElementById("btnTestVoice").addEventListener("click", () => {
-    speak("Your word is: accommodation. The hotel had comfortable accommodation.", { rate: chosenRate() });
-  });
-
   /* ================= speech ================= */
   // iPadOS/iOS Safari only allows speechSynthesis to start when the call
   // happens synchronously inside a user tap — no setTimeout/await in between —
@@ -865,10 +727,9 @@
     const synth = window.speechSynthesis;
     if (synth.speaking || synth.pending) synth.cancel();
     const u = new SpeechSynthesisUtterance(text);
-    u.rate = (opts && opts.rate) || chosenRate();
+    u.rate = (opts && opts.rate) || 0.85;
     u.pitch = 1;
-    const v = chosenVoice();
-    if (v) { u.voice = v; u.lang = v.lang; } else { u.lang = "en-US"; }
+    u.lang = "en-US";
     synth.speak(u);
   }
   // Safari on iPad sometimes needs its voice list "warmed up" by an empty
@@ -890,7 +751,6 @@
   async function renderHome() {
     const [lists, sessions] = await Promise.all([Store.listLists(), Store.allSessions()]);
     document.getElementById("statLists").textContent = lists.length;
-    document.getElementById("listEmpty").hidden = true;
     document.getElementById("statSessions").textContent = sessions.length;
     let totalCorrect = 0, totalWords = 0;
     sessions.forEach(s => { totalCorrect += (s.correct || 0); totalWords += (s.total || 0); });
@@ -921,23 +781,9 @@
           '<button class="btn btn-ghost btn-sm" data-act="share">🔗 Share</button>' +
           '<button class="btn btn-ghost btn-sm" data-act="delete">Delete</button>' +
         '</div>';
-      if (list.builtin) {
-        const status = masterStatus(sessions);
-        const mastered = MASTER_WORDS.filter(w => status[w] === true).length;
-        const toReview = MASTER_WORDS.filter(w => status[w] === false).length;
-        card.querySelector(".meta").textContent = wordCount.toLocaleString() + " words · " + mastered + " spelled right · " + toReview + " to review";
-        card.querySelector('[data-act="delete"]').remove();
-        card.querySelector('[data-act="share"]').remove();
-        const size = document.createElement("div");
-        size.className = "size-row";
-        size.innerHTML = '<label>Words per test</label><select>' + [10, 15, 20, 30, 50].map(n => '<option value="' + n + '"' + (n === getTestSize() ? " selected" : "") + '>' + n + '</option>').join("") + '</select>' +
-          '<div class="mastery-track" style="flex-basis:100%;"><div class="mastery-fill" style="width:' + (mastered / wordCount * 100).toFixed(1) + '%"></div></div>';
-        size.querySelector("select").addEventListener("change", e => setTestSize(parseInt(e.target.value, 10)));
-        card.insertBefore(size, card.querySelector(".actions"));
-      }
       card.querySelector('[data-act="practice"]').addEventListener("click", () => startPractice(list));
+      card.querySelector('[data-act="share"]').addEventListener("click", () => shareList(list));
       const delBtn = card.querySelector('[data-act="delete"]');
-      if (delBtn) {
       let confirming = false;
       delBtn.addEventListener("click", async () => {
         if (!confirming) {
@@ -951,8 +797,6 @@
         toast("List deleted");
         renderHome();
       });
-      }
-      if (!list.builtin) card.querySelector('[data-act="share"]').addEventListener("click", () => shareList(list));
       grid.appendChild(card);
     });
   }
@@ -1186,15 +1030,7 @@
     return a;
   }
 
-  let masterBatch = null;
   function startPractice(list, wordsOverride) {
-    if (list.builtin && !wordsOverride) {
-      // Use the batch prepared in advance so speech still starts inside the tap (iPad).
-      const words = masterBatch || shuffle(MASTER_LIST.words).slice(0, getTestSize());
-      masterBatch = null;
-      prepareMasterBatch();
-      return startPractice(list, words);
-    }
     const words = wordsOverride || list.words || [];
     if (!words.length) { toast("This list has no words"); return; }
     session = { list, order: shuffle(words), idx: 0, answers: [] };
@@ -1220,7 +1056,7 @@
     if (session) speak(session.order[session.idx].word);
   });
   document.getElementById("btnSentence").addEventListener("click", () => {
-    if (session) speak(session.order[session.idx].sentence, { rate: Math.min(1, chosenRate() + 0.1) });
+    if (session) speak(session.order[session.idx].sentence, { rate: 0.95 });
   });
 
   function submitCurrentWord() {
@@ -1269,7 +1105,6 @@
     }
 
     document.getElementById("btnRetryMissed").hidden = missed.length === 0;
-    document.getElementById("btnRetryAll").textContent = session.list.builtin ? "Next " + getTestSize() + " words" : "Practice full list again";
     document.getElementById("btnRetryAll").onclick = () => startPractice(session.list);
     document.getElementById("btnRetryMissed").onclick = () => startPractice(session.list, missed.map(m => ({ word: m.word, sentence: m.sentence })));
 
@@ -1279,10 +1114,8 @@
       date: new Date().toISOString(),
       total,
       correct,
-      missed: missed.map(m => ({ word: m.word, typed: m.typed })),
-      tested: session.answers.filter(a => a.correct).map(a => a.word)
+      missed: missed.map(m => ({ word: m.word, typed: m.typed }))
     });
-    if (session.list.builtin) prepareMasterBatch();
 
     showScreen("results");
   }
@@ -1378,15 +1211,9 @@
       '</svg>';
   }
 
-  function prepareMasterBatch() { pickMasterBatch(getTestSize()).then(b => { masterBatch = b; }); }
-  document.addEventListener("change", e => { if (e.target.closest && e.target.closest(".size-row")) prepareMasterBatch(); });
-
   /* ================= boot ================= */
   initCapabilities();
   renderHome();
-  prepareMasterBatch();
   checkForImportLink();
 })();
 </script>
-
-</body></html>
