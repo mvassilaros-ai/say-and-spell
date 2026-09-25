@@ -1,0 +1,1393 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found]){display:none!important}</style></head><body>
+<title>Say &amp; Spell</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f7fa;
+    --surface: #ffffff;
+    --surface-2: #e8ecf2;
+    --ink: #1c2430;
+    --ink-secondary: #55606e;
+    --ink-muted: #8993a1;
+    --border: #dce2ea;
+    --accent: #2d5fe0;
+    --accent-strong: #1e46b8;
+    --accent-ink: #ffffff;
+    --accent-wash: #e8eefd;
+    --good: #1e9e64;
+    --good-wash: #e4f7ee;
+    --bad: #e24b4b;
+    --bad-wash: #fdecec;
+    --warn: #c98a1e;
+    --warn-wash: #fbf0dc;
+    --shadow: 0 1px 2px rgba(28,36,48,0.06), 0 8px 24px -12px rgba(28,36,48,0.18);
+    color-scheme: light;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #12161d;
+      --surface: #1a1f29;
+      --surface-2: #222836;
+      --ink: #ecedf2;
+      --ink-secondary: #aeb6c2;
+      --ink-muted: #737c8a;
+      --border: #2b3140;
+      --accent: #6e93ff;
+      --accent-strong: #8fabff;
+      --accent-ink: #0d1220;
+      --accent-wash: #202a44;
+      --good: #4adb98;
+      --good-wash: #163326;
+      --bad: #ff6b6b;
+      --bad-wash: #3a1f20;
+      --warn: #e8b95b;
+      --warn-wash: #3a2f16;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 12px 28px -12px rgba(0,0,0,0.55);
+      color-scheme: dark;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #12161d;
+    --surface: #1a1f29;
+    --surface-2: #222836;
+    --ink: #ecedf2;
+    --ink-secondary: #aeb6c2;
+    --ink-muted: #737c8a;
+    --border: #2b3140;
+    --accent: #6e93ff;
+    --accent-strong: #8fabff;
+    --accent-ink: #0d1220;
+    --accent-wash: #202a44;
+    --good: #4adb98;
+    --good-wash: #163326;
+    --bad: #ff6b6b;
+    --bad-wash: #3a1f20;
+    --warn: #e8b95b;
+    --warn-wash: #3a2f16;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 12px 28px -12px rgba(0,0,0,0.55);
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  h1, h2, h3, .display {
+    font-family: "Fredoka", "Segoe UI", system-ui, sans-serif;
+    font-weight: 600;
+    text-wrap: balance;
+    letter-spacing: 0.01em;
+    margin: 0;
+  }
+
+  .mono { font-family: "JetBrains Mono", ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+
+  button {
+    font-family: inherit;
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+  button:focus-visible, input:focus-visible, a:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  input[type="text"] {
+    font-family: inherit;
+    color: var(--ink);
+    background: var(--surface);
+    /* 16px+ stops iOS/iPadOS Safari from auto-zooming the page on focus */
+    font-size: 16px;
+  }
+
+  .app {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 20px 20px 64px;
+  }
+
+  /* ---------- top bar ---------- */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 4px 2px 22px;
+    flex-wrap: wrap;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .brand-mark {
+    width: 38px; height: 38px;
+    border-radius: 11px;
+    background: var(--accent);
+    color: var(--accent-ink);
+    display: flex; align-items: center; justify-content: center;
+    font-family: "Fredoka", sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    flex-shrink: 0;
+    box-shadow: var(--shadow);
+  }
+  .brand h1 { font-size: 22px; }
+
+  .nav {
+    display: flex;
+    gap: 6px;
+    background: var(--surface-2);
+    padding: 4px;
+    border-radius: 12px;
+  }
+  .nav button {
+    border: none;
+    background: transparent;
+    color: var(--ink-secondary);
+    padding: 8px 16px;
+    border-radius: 9px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: "Fredoka", sans-serif;
+    transition: background 0.15s, color 0.15s;
+  }
+  .nav button[aria-current="true"] {
+    background: var(--surface);
+    color: var(--ink);
+    box-shadow: var(--shadow);
+  }
+
+  .screen { display: none; }
+  .screen.active { display: block; animation: fade-in 0.2s ease-out; }
+  @keyframes fade-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) {
+    .screen.active { animation: none; }
+  }
+
+  /* ---------- cards / buttons ---------- */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-radius: 11px;
+    border: 1px solid transparent;
+    padding: 11px 18px;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: "Fredoka", sans-serif;
+    transition: transform 0.08s ease, filter 0.15s;
+  }
+  .btn:active { transform: translateY(1px); }
+  .btn-primary { background: var(--accent); color: var(--accent-ink); }
+  .btn-primary:hover { filter: brightness(1.06); }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-ghost { background: var(--surface-2); color: var(--ink); }
+  .btn-ghost:hover { filter: brightness(0.97); }
+  .btn-danger { background: var(--bad-wash); color: var(--bad); }
+  .btn-sm { padding: 7px 13px; font-size: 13px; border-radius: 9px; }
+  .btn-block { width: 100%; }
+  .btn-icon { width: 40px; height: 40px; padding: 0; border-radius: 999px; background: var(--surface-2); color: var(--ink); font-size: 16px; }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    font-family: "Fredoka", sans-serif;
+  }
+  .pill-good { background: var(--good-wash); color: var(--good); }
+  .pill-bad { background: var(--bad-wash); color: var(--bad); }
+  .pill-neutral { background: var(--surface-2); color: var(--ink-secondary); }
+
+  .empty {
+    text-align: center;
+    padding: 48px 24px;
+    color: var(--ink-secondary);
+  }
+  .empty .glyph { font-size: 34px; margin-bottom: 10px; }
+
+  /* ---------- home ---------- */
+  .stat-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 22px;
+  }
+  .stat-tile {
+    padding: 16px;
+  }
+  .stat-tile .num { font-size: 26px; font-weight: 700; }
+  .stat-tile .label { font-size: 12.5px; color: var(--ink-secondary); text-transform: uppercase; letter-spacing: 0.04em; margin-top: 2px; }
+
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin: 28px 0 12px;
+  }
+  .section-head h2 { font-size: 17px; color: var(--ink-secondary); }
+
+  .list-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 14px;
+  }
+  .list-card {
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .list-card h3 { font-size: 17px; }
+  .list-card .meta { font-size: 13px; color: var(--ink-muted); }
+  .list-card .actions { display: flex; gap: 8px; margin-top: auto; flex-wrap: wrap; }
+  .list-card .actions .btn { flex: 1 1 auto; }
+
+  /* ---------- new list ---------- */
+  .tabs { display: flex; gap: 8px; margin-bottom: 18px; }
+  .tab {
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--ink-secondary);
+    padding: 9px 16px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-family: "Fredoka", sans-serif;
+    font-size: 14px;
+  }
+  .tab[aria-selected="true"] { background: var(--accent-wash); color: var(--accent-strong); border-color: var(--accent-wash); }
+
+  .field { margin-bottom: 16px; }
+  .field label { display: block; font-size: 13px; font-weight: 700; color: var(--ink-secondary); margin-bottom: 6px; }
+  .field input[type="text"], .field textarea {
+    width: 100%;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 11px 13px;
+    font-size: 16px;
+  }
+  .field select {
+    width: 100%; border: 1.5px solid var(--border); border-radius: 10px;
+    padding: 11px 13px; font-size: 16px; background: var(--surface); color: var(--ink); font-family: inherit;
+  }
+  .size-row { display:flex; align-items:center; gap:8px; margin:10px 0 2px; font-size:13px; color: var(--ink-secondary); flex-wrap: wrap; }
+  .size-row select { border:1.5px solid var(--border); border-radius:8px; padding:5px 8px; font-size:14px; background: var(--surface); color: var(--ink); font-family: inherit; }
+  .mastery-track { height:6px; border-radius:99px; background: var(--surface-2); overflow:hidden; margin-top:8px; }
+  .mastery-fill { height:100%; background: var(--good); }
+  .field textarea { min-height: 130px; resize: vertical; font-family: inherit; }
+  .hint { font-size: 12.5px; color: var(--ink-muted); margin-top: 6px; }
+
+  .dropzone {
+    border: 1.5px dashed var(--border);
+    border-radius: 14px;
+    padding: 28px 18px;
+    text-align: center;
+    color: var(--ink-secondary);
+    background: var(--surface-2);
+  }
+  .dropzone .glyph { font-size: 30px; margin-bottom: 8px; display: block; }
+  .photo-preview { max-width: 100%; max-height: 220px; border-radius: 10px; margin: 12px auto 0; display: block; border: 1px solid var(--border); }
+
+  .word-table { width: 100%; border-collapse: collapse; margin-top: 4px; }
+  .word-table th {
+    text-align: left;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--ink-muted);
+    font-weight: 700;
+    padding: 0 8px 8px;
+  }
+  .word-table td { padding: 5px 8px; vertical-align: middle; }
+  .word-table input[type="text"] {
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-size: 16px;
+    width: 100%;
+    min-width: 110px;
+  }
+  .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .word-table .num-col { width: 26px; color: var(--ink-muted); font-size: 13px; text-align: right; padding-right: 10px; }
+  .word-table .del-col { width: 36px; }
+  .row-del {
+    width: 30px; height: 30px; border-radius: 8px; border: none;
+    background: transparent; color: var(--ink-muted); font-size: 15px;
+  }
+  .row-del:hover { background: var(--bad-wash); color: var(--bad); }
+
+  .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+
+  /* ---------- practice ---------- */
+  .practice-card { padding: 36px 28px; text-align: center; max-width: 520px; margin: 0 auto; }
+  .progress-track { height: 6px; background: var(--surface-2); border-radius: 999px; overflow: hidden; margin-bottom: 26px; }
+  .progress-fill { height: 100%; background: var(--accent); border-radius: 999px; transition: width 0.25s ease; }
+  .progress-label { font-size: 13px; color: var(--ink-muted); margin-bottom: 20px; font-family: "JetBrains Mono", monospace; }
+
+  .speak-btn {
+    width: 92px; height: 92px;
+    border-radius: 999px;
+    border: none;
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-size: 34px;
+    box-shadow: var(--shadow);
+    margin-bottom: 14px;
+    transition: transform 0.12s ease;
+  }
+  .speak-btn:hover { transform: scale(1.04); }
+  .speak-btn:active { transform: scale(0.97); }
+  .speak-sub { display: block; font-size: 13px; color: var(--ink-muted); margin-bottom: 22px; }
+  .sentence-btn { font-size: 13px; }
+
+  .answer-input {
+    width: 100%;
+    font-size: 22px;
+    text-align: center;
+    padding: 14px;
+    border: none;
+    border-bottom: 3px solid var(--border);
+    background: transparent;
+    font-family: "JetBrains Mono", monospace;
+    letter-spacing: 0.02em;
+    color: var(--ink);
+  }
+  .answer-input:focus { border-bottom-color: var(--accent); outline: none; }
+
+  /* ---------- results ---------- */
+  .score-tile {
+    text-align: center;
+    padding: 30px 20px 26px;
+    margin-bottom: 22px;
+  }
+  .score-tile .big { font-size: 48px; font-weight: 700; font-family: "JetBrains Mono", monospace; }
+  .score-tile .pct { font-size: 15px; color: var(--ink-secondary); margin-top: 4px; }
+
+  .review-row {
+    display: grid;
+    grid-template-columns: 22px 1fr 1fr;
+    gap: 10px;
+    align-items: center;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+  }
+  .review-row:last-child { border-bottom: none; }
+  .review-row .badge { font-size: 15px; }
+  .review-row .lbl { font-size: 11px; text-transform: uppercase; color: var(--ink-muted); letter-spacing: 0.03em; display: block; margin-bottom: 2px; }
+  .review-row .typed { color: var(--bad); font-family: "JetBrains Mono", monospace; }
+  .review-row .correct { color: var(--good); font-family: "JetBrains Mono", monospace; font-weight: 700; }
+
+  /* ---------- history ---------- */
+  .history-list-picker { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+  .session-table { width: 100%; border-collapse: collapse; }
+  .session-table th { text-align: left; font-size: 12px; text-transform: uppercase; color: var(--ink-muted); padding: 8px 12px; border-bottom: 1px solid var(--border); }
+  .session-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); font-size: 14px; }
+  .session-table td.mono { font-family: "JetBrains Mono", monospace; }
+
+  .chart-wrap { padding: 18px 18px 8px; margin-bottom: 20px; }
+  .chart-wrap h3 { font-size: 14px; color: var(--ink-secondary); margin-bottom: 8px; }
+
+  .toast {
+    position: fixed;
+    bottom: 22px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--ink);
+    color: var(--bg);
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: var(--shadow);
+    z-index: 50;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(-4px); }
+
+  .banner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--warn-wash);
+    color: var(--warn);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 13.5px;
+    margin-bottom: 16px;
+  }
+
+  @media (max-width: 520px) {
+    .stat-row { grid-template-columns: 1fr 1fr; }
+    .stat-row .stat-tile:last-child { grid-column: 1 / -1; }
+    .topbar { flex-direction: column; align-items: flex-start; }
+    .review-row { grid-template-columns: 18px 1fr; }
+    .review-row .correct-cell { grid-column: 2; }
+  }
+</style>
+
+<div class="app">
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-mark">🐝</div>
+      <h1>Say &amp; Spell</h1>
+    </div>
+    <nav class="nav" id="mainNav">
+      <button data-screen="home" aria-current="true">Word Lists</button>
+      <button data-screen="history">History</button>
+      <button data-screen="voice">🔊 Voice</button>
+    </nav>
+  </div>
+
+  <!-- HOME -->
+  <section class="screen active" id="screen-home">
+    <div class="stat-row">
+      <div class="card stat-tile"><div class="num mono" id="statLists">0</div><div class="label">Word lists</div></div>
+      <div class="card stat-tile"><div class="num mono" id="statSessions">0</div><div class="label">Practice runs</div></div>
+      <div class="card stat-tile"><div class="num mono" id="statAccuracy">—</div><div class="label">Overall accuracy</div></div>
+    </div>
+
+    <div class="btn-row" style="margin-bottom:0;">
+      <button class="btn btn-primary" id="btnNewList" style="flex:2; font-size:16px; padding:14px;">+ New spelling list</button>
+      <button class="btn btn-ghost" id="btnImportCode" style="flex:1; font-size:15px; padding:14px;">📥 Import a list</button>
+    </div>
+
+    <div class="section-head"><h2>Your lists</h2></div>
+    <div id="listGrid" class="list-grid"></div>
+    <div id="listEmpty" class="empty" hidden>
+      <div class="glyph">📝</div>
+      No lists yet — add your first spelling list to get started.
+    </div>
+  </section>
+
+  <!-- NEW LIST -->
+  <section class="screen" id="screen-newlist">
+    <div class="section-head" style="margin-top:0;"><h2 style="color:var(--ink); font-family:'Fredoka',sans-serif; font-size:20px;">New spelling list</h2>
+      <button class="btn btn-ghost btn-sm" data-nav="home">← Back</button>
+    </div>
+
+    <div class="field">
+      <label for="listNameInput">List name</label>
+      <input type="text" id="listNameInput" placeholder="e.g. Week 4 — silent letters">
+    </div>
+
+    <div class="tabs" role="tablist">
+      <button class="tab" id="tabType" aria-selected="true">✏️ Type words</button>
+      <button class="tab" id="tabPhoto" aria-selected="false">📷 Upload a photo</button>
+    </div>
+
+    <div id="paneType">
+      <div class="field">
+        <label for="wordsTextarea">Spelling words</label>
+        <textarea id="wordsTextarea" placeholder="Type one word per line, or separate with commas — e.g.&#10;giraffe&#10;knowledge&#10;beautiful"></textarea>
+        <div class="hint">One word per line or comma-separated.</div>
+      </div>
+      <button class="btn btn-primary" id="btnBuildFromText">Continue →</button>
+    </div>
+
+    <div id="panePhoto" hidden>
+      <div class="dropzone" id="dropzone">
+        <span class="glyph">📷</span>
+        <div id="dropzoneLabel">Take or choose a photo of your spelling list</div>
+        <input type="file" id="photoInput" accept="image/*" capture="environment" style="margin-top:12px;">
+        <img id="photoPreview" class="photo-preview" hidden>
+      </div>
+      <div class="banner" id="photoUnavailableBanner" hidden>
+        ⚠️ Photo scanning isn't available in this view — try typing the words instead.
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="btnAnalyzePhoto" disabled>✨ Read words from photo</button>
+      </div>
+    </div>
+
+    <div id="reviewSection" hidden>
+      <div class="section-head"><h2>Check the words</h2>
+        <button class="btn btn-ghost btn-sm" id="btnSuggestSentences">✨ Suggest sentences</button>
+      </div>
+      <div class="table-scroll">
+      <table class="word-table">
+        <thead><tr><th></th><th>Word</th><th>Example sentence (optional)</th><th></th></tr></thead>
+        <tbody id="reviewTbody"></tbody>
+      </table>
+      </div>
+      <button class="btn btn-ghost btn-sm" id="btnAddRow" style="margin-top:10px;">+ Add word</button>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="btnSaveList">Save list</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRACTICE -->
+  <section class="screen" id="screen-practice">
+    <div class="card practice-card">
+      <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+      <div class="progress-label" id="progressLabel">WORD 1 OF 1</div>
+
+      <button class="speak-btn" id="btnSpeak" aria-label="Hear the word">🔊</button>
+      <span class="speak-sub" id="replayHint">Tap to hear the word again</span>
+      <button class="btn btn-ghost btn-sm sentence-btn" id="btnSentence" style="margin-bottom:22px;" hidden>🗣️ Hear it in a sentence</button>
+
+      <input type="text" class="answer-input" id="answerInput" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="done" placeholder="Type what you hear">
+      <div class="btn-row" style="justify-content:center; margin-top:24px;">
+        <button class="btn btn-primary" id="btnSubmitWord" style="min-width:160px;">Next →</button>
+      </div>
+      <button class="btn btn-ghost btn-sm" id="btnQuitPractice" style="margin-top:18px;">End early</button>
+    </div>
+  </section>
+
+  <!-- RESULTS -->
+  <section class="screen" id="screen-results">
+    <div class="card score-tile">
+      <div class="big mono" id="resultScore">0 / 0</div>
+      <div class="pct" id="resultPct">0% correct</div>
+    </div>
+    <div id="resultReviewWrap">
+      <div class="section-head" style="margin-top:0;"><h2>Words to review</h2></div>
+      <div class="card" id="reviewList"></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" id="btnRetryAll">Practice full list again</button>
+      <button class="btn btn-ghost" id="btnRetryMissed" hidden>Practice missed words</button>
+      <button class="btn btn-ghost" data-nav="home">Back to lists</button>
+    </div>
+  </section>
+
+  <!-- VOICE -->
+  <section class="screen" id="screen-voice">
+    <div class="section-head" style="margin-top:0;"><h2 style="color:var(--ink); font-family:'Fredoka',sans-serif; font-size:20px;">Reading voice</h2></div>
+    <div class="card" style="padding:18px;">
+      <div class="field">
+        <label for="voiceSelect">Voice</label>
+        <select id="voiceSelect"></select>
+        <div class="hint" id="voiceHint">The most natural-sounding voice on this device is picked automatically. ★ marks the higher-quality ones.</div>
+      </div>
+      <div class="field">
+        <label for="rateSelect">Speed</label>
+        <select id="rateSelect">
+          <option value="0.75">Slow</option>
+          <option value="0.85">A little slow</option>
+          <option value="0.95">Normal</option>
+        </select>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="btnTestVoice">▶ Test voice</button>
+      </div>
+      <div class="banner" style="margin-top:16px;">
+        <strong>Want a much more natural voice?</strong> On iPad or iPhone, open <em>Settings › Accessibility › Spoken Content › Voices › English</em> and download a voice marked <em>Premium</em> or <em>Enhanced</em> (Ava, Zoe or Evan sound great). Then come back here and pick it. On a Mac it's <em>System Settings › Accessibility › Spoken Content › System voice › Manage Voices</em>. In Edge, the “Natural” voices are already the best choice.
+      </div>
+    </div>
+  </section>
+
+  <!-- HISTORY -->
+  <section class="screen" id="screen-history">
+    <div class="section-head" style="margin-top:0;"><h2 style="color:var(--ink); font-family:'Fredoka',sans-serif; font-size:20px;">Practice history</h2></div>
+    <div class="history-list-picker" id="historyPicker"></div>
+    <div id="historyEmpty" class="empty">
+      <div class="glyph">📊</div>
+      Practice a list to start tracking scores here.
+    </div>
+    <div id="historyContent" hidden>
+      <div class="card chart-wrap">
+        <h3>Score over time</h3>
+        <div id="trendChart"></div>
+      </div>
+      <div class="card table-scroll">
+        <table class="session-table">
+          <thead><tr><th>Date</th><th>Score</th><th>Missed words</th></tr></thead>
+          <tbody id="sessionTbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ================= capabilities ================= */
+  let db = null, sample = null, sampleLimits = null;
+
+  async function initCapabilities() {
+    try { db = (window.claude && await window.claude.use("db")) || null; } catch (e) { db = null; }
+    try { sample = (window.claude && await window.claude.use("sample")) || null; } catch (e) { sample = null; }
+    if (sample) {
+      try { sampleLimits = await sample.limits(); } catch (e) { sampleLimits = null; }
+    }
+    applyCapabilityUI();
+  }
+
+  function applyCapabilityUI() {
+    const photoOk = !!(sample && sampleLimits && sampleLimits.images);
+    document.getElementById("tabPhoto").hidden = !photoOk;
+    document.getElementById("btnSuggestSentences").hidden = !sample;
+    if (photoOk) {
+      document.getElementById("photoInput").accept = sampleLimits.images.mediaTypes.join(",");
+    }
+  }
+
+  /* ================= tiny local store fallback ================= */
+  const LS_LISTS = "sns_wordlists_v1";
+  const LS_SESSIONS = "sns_sessions_v1";
+
+  function readLS(key) {
+    try { return JSON.parse(localStorage.getItem(key) || "[]"); } catch (e) { return []; }
+  }
+  function writeLS(key, val) {
+    try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) { /* ignore */ }
+  }
+  function uid() {
+    return (crypto.randomUUID ? crypto.randomUUID() : "id-" + Date.now() + "-" + Math.random().toString(16).slice(2));
+  }
+
+  const Store = {
+    async listLists() {
+      return [MASTER_LIST].concat(await this._userLists());
+    },
+    async _userLists() {
+      if (db) {
+        try {
+          const snap = await db.collection("wordlists").orderBy("createdAt", "desc").get();
+          return snap.docs.map(d => Object.assign({ id: d.id }, d.data()));
+        } catch (e) { /* fall through to local */ }
+      }
+      return readLS(LS_LISTS).slice().sort((a, b) => (b.createdAt || "").localeCompare(a.createdAt || ""));
+    },
+    async saveList(list) {
+      const id = list.id || uid();
+      const rec = Object.assign({}, list, { id, createdAt: list.createdAt || new Date().toISOString() });
+      if (db) {
+        try { await db.collection("wordlists").doc(id).set(rec); return id; } catch (e) { /* fall through */ }
+      }
+      const all = readLS(LS_LISTS);
+      const idx = all.findIndex(l => l.id === id);
+      if (idx >= 0) all[idx] = rec; else all.push(rec);
+      writeLS(LS_LISTS, all);
+      return id;
+    },
+    async deleteList(id) {
+      if (db) {
+        try { await db.collection("wordlists").doc(id).delete(); } catch (e) { /* ignore */ }
+      }
+      writeLS(LS_LISTS, readLS(LS_LISTS).filter(l => l.id !== id));
+    },
+    async addSession(session) {
+      const rec = Object.assign({}, session, { id: uid() });
+      if (db) {
+        try { await db.collection("sessions").add(rec); return; } catch (e) { /* fall through */ }
+      }
+      const all = readLS(LS_SESSIONS);
+      all.push(rec);
+      writeLS(LS_SESSIONS, all);
+    },
+    async listSessions(listId) {
+      if (db) {
+        try {
+          const snap = await db.collection("sessions").where("listId", "==", listId).get();
+          return snap.docs.map(d => Object.assign({ id: d.id }, d.data())).sort((a, b) => (a.date || "").localeCompare(b.date || ""));
+        } catch (e) { /* fall through */ }
+      }
+      return readLS(LS_SESSIONS).filter(s => s.listId === listId).sort((a, b) => (a.date || "").localeCompare(b.date || ""));
+    },
+    async allSessions() {
+      if (db) {
+        try {
+          const snap = await db.collection("sessions").get();
+          return snap.docs.map(d => d.data());
+        } catch (e) { /* fall through */ }
+      }
+      return readLS(LS_SESSIONS);
+    }
+  };
+
+  /* ================= toast ================= */
+  let toastTimer = null;
+  function toast(msg) {
+    const el = document.getElementById("toast");
+    el.textContent = msg;
+    el.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove("show"), 2400);
+  }
+
+  /* ================= nav / screens ================= */
+  function showScreen(name) {
+    document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+    const el = document.getElementById("screen-" + name);
+    if (el) el.classList.add("active");
+    document.querySelectorAll("#mainNav button").forEach(b => {
+      b.setAttribute("aria-current", b.dataset.screen === name ? "true" : "false");
+    });
+    if (name === "home") renderHome();
+    if (name === "history") renderHistoryPicker();
+  }
+
+  document.getElementById("mainNav").addEventListener("click", e => {
+    const btn = e.target.closest("button[data-screen]");
+    if (btn) showScreen(btn.dataset.screen);
+  });
+  document.querySelectorAll("[data-nav]").forEach(btn => {
+    btn.addEventListener("click", () => showScreen(btn.dataset.nav));
+  });
+
+  /* ================= built-in master list ================= */
+  const MASTER_ID = "builtin-grade5-master";
+  const MASTER_WORDS = ["ability", "aboard", "absence", "absolutely", "absurd", "abundance", "accent", "accept", "acceptance", "accident", "accidentally", "accommodation", "accompany", "accomplishment", "according", "accurate", "accused", "accustomed", "ache", "acknowledge", "acquaintance", "acre", "activity", "actually", "addition", "address", "adjustment", "admission", "adolescent", "adoption", "advanced", "advantage", "adventure", "advertisement", "affect", "affectionate", "afterwards", "agreeable", "agricultural", "alcohol", "alligator", "allowance", "alphabet", "already", "although", "amazement", "ambulance", "ammunition", "amusement", "anchor", "ancient", "anniversary", "announcement", "annual", "answer", "anxiety", "anxious", "apartment", "apologize", "appearance", "appetite", "application", "appointment", "appreciate", "appropriate", "approval", "approximately", "aquarium", "arduous", "argue", "arrangement", "artificial", "ascended", "assignment", "assistance", "assortment", "astonished", "astronaut", "athletes", "atmosphere", "attendance", "attitude", "attractive", "audience", "auditorium", "authority", "autumn", "available", "awakening", "awful", "bacteria", "baggage", "balloon", "banana", "banquet", "barefooted", "basement", "beautiful", "beggar", "beginning", "behavior", "believe", "bicycle", "bigot", "birthday", "biscuits", "blizzard", "blouse", "bomb", "boundary", "bouquet", "bracelet", "breakfast", "breath", "breathe", "brilliant", "broadcast", "buffalo", "buffoonery", "building", "bulletin", "bureau", "burglar", "burial", "cabbage", "cabinet", "cactus", "cafeteria", "calendar", "campaign", "canary", "candidate", "capable", "career", "carnival", "carpenter", "carriage", "cartoon", "catalogue", "caterpillar", "caution", "ceiling", "celebration", "celery", "cemetery", "century", "certainly", "certificate", "champion", "chemistry", "chocolate", "choir", "chorus", "circulation", "circumstances", "circumstantial", "circus", "citizen", "civilization", "cleanliness", "climate", "coarse", "cocoa", "coconut", "coffee", "combination", "comfortable", "commander", "commercial", "committee", "communicate", "community", "comparison", "competition", "complaint", "completely", "compliment", "concrete", "congratulate", "conquer", "conscience", "consequences", "consideration", "contented", "continually", "convenience", "convention", "conversation", "cooperation", "corruptible", "costume", "courteous", "crayons", "criminal", "criticism", "cucumber", "curiosity", "custodian", "customer", "cylinder", "cynicism", "dandelion", "dangerous", "daughter", "deceived", "decision", "decorate", "decoration", "definite", "definition", "delicious", "delightful", "delivery", "deodorant", "descending", "descent", "description", "descriptive", "desirable", "desperate", "destination", "detective", "deterrence", "diaspora", "dictionary", "difference", "diploma", "disagreeable", "disappear", "disappointment", "discount", "discovered", "dissatisfied", "distinguish", "document", "domestic", "doubtful", "dramatic", "drowned", "dungarees", "earnest", "eclipse", "economical", "education", "effective", "efficient", "eighteen", "elaborate", "electric", "electrically", "elephant", "elevator", "embarrass", "embroidery", "emergency", "employees", "employment", "endurance", "energetic", "engine", "engineer", "enormous", "entertainment", "enthusiastic", "entrance", "envelope", "equipment", "escalate", "especially", "essential", "establish", "examination", "exceedingly", "excellent", "exception", "excitement", "exercise", "exhausted", "expensive", "experience", "explanation", "explosion", "extraordinary", "extremely", "factory", "failure", "familiar", "family", "famous", "fancy", "farming", "fascinated", "fashion", "favorite", "feather", "feature", "february", "federal", "festival", "fiction", "fierce", "figures", "filthily", "finally", "finish", "fixed", "flashlight", "flavor", "float", "fluid", "following", "foolish", "foreign", "forgotten", "formerly", "fortunate", "forward", "fought", "freeze", "freight", "frequent", "friendly", "frighten", "frontier", "fudge", "funeral", "furnace", "furniture", "gallon", "garage", "garbage", "garment", "gasoline", "gathering", "generally", "generation", "generous", "genius", "geography", "ghost", "giant", "giraffe", "glasses", "glorious", "golden", "gorgeous", "gossip", "government", "governor", "graceful", "gradually", "graduation", "grammar", "granite", "grapefruit", "grasshopper", "gratitude", "greatest", "greedy", "groceries", "ground", "guardian", "guessed", "guilty", "guitar", "gymnasium", "hammer", "handkerchief", "handsome", "happiest", "happiness", "hardware", "hatch", "hatchet", "haunted", "headache", "headquarters", "healthful", "healthy", "height", "heroes", "hesitate", "highest", "hippopotamus", "hoping", "hopping", "horrid", "horror", "hospital", "houses", "human", "humorous", "iceberg", "ignorant", "illustrate", "imagination", "imitation", "immediate", "immigrants", "impatient", "important", "impossible", "impression", "improvement", "incident", "including", "inconvenient", "incorrect", "increase", "independence", "independent", "industrial", "industries", "influence", "information", "initial", "injury", "innocent", "inquire", "inspection", "instantly", "institution", "instruction", "instrument", "insulated", "insurance", "intelligence", "intelligent", "interested", "interfere", "interior", "international", "interrupt", "interview", "introduction", "invalid", "invention", "investigation", "invitation", "irrigation", "island", "issue", "jacket", "jealous", "jeopardy", "jewelry", "journey", "jubilant", "juice", "kettle", "kindergarten", "kindly", "kingdom", "kitchen", "knead", "knight", "knitting", "knives", "knowledge", "laboratory", "laborious", "ladder", "language", "languish", "lantern", "laughed", "laundry", "lawyer", "league", "learned", "legislature", "lettuce", "librarian", "library", "license", "lieutenant", "lightning", "liquid", "literature", "location", "lodge", "losing", "lumber", "luncheon", "macaroni", "machine", "machinery", "magazine", "magnificent", "maintain", "majority", "management", "manager", "manicure", "mansion", "manufacture", "manufacturing", "marble", "marriage", "married", "marshmallows", "martyr", "marvelous", "material", "mathematics", "mattress", "meadow", "measles", "measure", "mechanical", "medicine", "medium", "membership", "memory", "mentioned", "merchant", "merely", "message", "messenger", "method", "microscope", "middle", "midnight", "mighty", "military", "million", "mineral", "minister", "minute", "minutes", "mischief", "mischievous", "miserable", "missile", "missionary", "mistake", "mittens", "mixture", "moccasins", "moderate", "moisture", "monotonous", "monument", "mortgage", "mosquito", "motorcycle", "mountain", "movement", "multiplication", "municipal", "museum", "mushrooms", "musician", "mustard", "mysterious", "napkin", "narrow", "national", "naturally", "naughty", "navigation", "necessarily", "necessary", "necessity", "neglected", "neighbor", "neither", "nephew", "nervous", "nonsense", "noticed", "nourishing", "nuisance", "numerous", "nursery", "obedience", "objection", "obliged", "observation", "observe", "obtained", "occasionally", "occupation", "occurrence", "offering", "officers", "omitted", "onions", "operation", "opinion", "opportunities", "opposition", "ordinarily", "organization", "organized", "originally", "oriole", "orphan", "oxygen", "oyster", "package", "pageant", "pajamas", "pamphlets", "papoose", "parachute", "paragraph", "parallel", "parliament", "particular", "particularly", "passage", "pasture", "patience", "peace", "peanuts", "peasants", "peculiar", "pencil", "peninsula", "penmanship", "perfectly", "performance", "perilous", "permission", "personality", "petroleum", "pheasants", "phonograph", "photograph", "physical", "pickle", "picnic", "picture", "piece", "pierce", "pigeon", "pillow", "pineapple", "pioneer", "pistol", "pitcher", "planned", "plantation", "plaster", "plateau", "playground", "pleasant", "please", "pleasure", "pledge", "plentiful", "pneumonia", "pocket", "poisonous", "political", "politics", "popular", "population", "porcupine", "position", "positive", "possess", "possession", "possibilities", "possible", "postage", "postpone", "posture", "poultry", "pounds", "powder", "practically", "practicing", "prairie", "praise", "preamble", "precious", "predicate", "preferred", "prejudice", "preparation", "presence", "preserve", "president", "pressure", "prettier", "previous", "primitive", "principal", "principle", "prisoner", "privilege", "probably", "procedure", "procession", "produce", "product", "production", "profession", "profitable", "prominent", "promotion", "promptly", "pronunciation", "propelled", "property", "proportion", "proposed", "proposition", "prosperous", "protection", "proteins", "provided", "provision", "publication", "pudding", "pumpkin", "puncture", "punishment", "puppies", "purchase", "purpose", "pursuit", "puzzle", "pyramids", "quality", "quantities", "quantity", "quarrel", "quarter", "question", "quickly", "quotation", "quote", "racial", "radiator", "ragged", "rapidly", "rattlesnake", "reader", "reality", "realize", "reasonable", "rebel", "receipt", "receive", "recently", "reception", "recess", "recipe", "recognize", "recommend", "recommendation", "recreation", "reference", "referred", "refreshments", "refrigeration", "refrigerator", "refugees", "refused", "refutation", "registration", "regretted", "relative", "religious", "remarkable", "remembrance", "reminder", "rendered", "representative", "requested", "require", "research", "reservation", "residence", "resolution", "resources", "respectfully", "responsibility", "responsible", "restaurant", "revenge", "revenue", "revolver", "rheumatism", "rooster", "sacrifice", "saddle", "safety", "salary", "sandwiches", "sanitary", "satellite", "satisfaction", "satisfied", "saucer", "sausage", "scaffold", "scarcely", "scarf", "scarlet", "scenery", "scheduled", "scheme", "scientist", "scissors", "scratch", "scribbling", "search", "secretary", "secured", "selection", "selfish", "semester", "separate", "separation", "september", "seriously", "serum", "servant", "several", "shelter", "shepherd", "sheriff", "shining", "shipments", "shopping", "shortage", "shoulder", "shrieking", "signature", "silverware", "sincere", "sincerely", "sincerity", "singular", "situation", "sixty", "skeleton", "skiing", "skillful", "sleigh", "slipper", "smooth", "sneeze", "social", "society", "somersaults", "source", "sparrow", "specialize", "specimen", "speedometer", "spices", "spinach", "splendid", "sprained", "spread", "sprinkle", "square", "squash", "squeak", "squeeze", "standard", "stationary", "stationery", "statue", "steady", "stenographer", "sticky", "stock", "stockings", "stomach", "storage", "straight", "straighten", "strawberries", "strength", "stretch", "struggle", "stubborn", "submarine", "subscribers", "subscription", "substance", "substitute", "subtraction", "succeed", "successful", "suddenly", "sufficient", "suggestion", "superintendent", "supermarket", "superstition", "supervisor", "supplied", "supposed", "surface", "surprise", "surrender", "surround", "surrounded", "swallow", "sweater", "swimming", "sympathize", "sympathy", "syntax", "taught", "teacher", "teaching", "teaspoon", "tedious", "telegram", "telegraph", "telephone", "telescope", "television", "temperature", "temporary", "terrible", "territory", "terrorism", "testimony", "textile", "thanksgiving", "thermometer", "thimble", "thorough", "though", "thought", "thoughtful", "thoughts", "thousand", "thread", "throat", "through", "throughout", "thumb", "thursday", "tickled", "tissues", "toaster", "tobacco", "toboggan", "tomato", "tomorrow", "tongue", "tonsillitis", "tough", "tourist", "tournament", "toward", "tractor", "tragedy", "transferred", "transportation", "traveling", "treasurer", "treatment", "tremble", "trimmed", "triumph", "tropical", "trouble", "trough", "trousers", "tuesday", "typewriter", "umbrella", "unable", "unanimous", "uncertain", "uncomfortable", "unconscious", "unconstitutional", "underneath", "understand", "understanding", "understood", "undoubtedly", "unexpected", "unfortunate", "uniform", "unimportant", "universal", "university", "unnecessary", "unpleasant", "unusual", "usually", "vacant", "vacation", "vaccinated", "vaccination", "valuable", "vanity", "varnish", "vegetable", "vegetation", "vehicle", "venison", "venture", "verdict", "vibration", "vicinity", "victory", "vigorous", "vinegar", "vintage", "visible", "vision", "visitors", "vitamins", "voluntary", "voyage", "vulgar", "washing", "watching", "watermelon", "wealthy", "weapons", "weather", "weaving", "wednesday", "weigh", "weight", "welfare", "whale", "whatever", "wheelbarrow", "which", "while", "whipping", "whiskers", "whisper", "whistle", "wholesale", "wicker", "wigwam", "wilderness", "willow", "winner", "winning", "witch", "witness", "wolves", "woman", "women", "wonderful", "wondering", "wooden", "woolen", "worked", "worried", "worse", "wouldn't", "wrapped", "writing", "written", "wrong", "years", "yeast", "yellow", "yesterday", "yield", "young", "younger", "yourself", "yourselves", "youth", "youthful"];
+
+  const MASTER_SENTENCES = {"ability": "She has the ability to run very fast.", "aboard": "Everyone climbed aboard the ship before it sailed.", "absence": "The teacher noticed his absence from class today.", "absolutely": "I am absolutely sure I locked the door.", "absurd": "Wearing a snowsuit to the beach would be absurd.", "abundance": "The garden had an abundance of tomatoes this summer.", "accent": "My grandmother speaks with a lovely Italian accent.", "accept": "Please accept this card as a thank-you gift.", "acceptance": "She smiled when she got her letter of acceptance.", "admission": "Admission to the museum is free on Sundays.", "adolescent": "An adolescent is someone who is not yet an adult.", "adoption": "The family celebrated the adoption of their new puppy.", "advanced": "My brother is in the advanced math class.", "advantage": "Being tall is an advantage in basketball.", "adventure": "Our camping trip was a real adventure.", "advertisement": "We saw an advertisement for the new movie on TV.", "affect": "Not getting enough sleep can affect how you feel.", "affectionate": "The kitten is very affectionate and loves to cuddle.", "afterwards": "We ate dinner and went for a walk afterwards.", "accident": "I spilled my milk by accident.", "accidentally": "He accidentally stepped on my foot.", "accommodation": "The hotel offered comfortable accommodation for our trip.", "accompany": "Will you accompany me to the store?", "accomplishment": "Finishing the puzzle was a big accomplishment.", "according": "According to the map, the park is two miles away.", "accurate": "Make sure your answers are accurate before you turn them in.", "accused": "The boy was accused of taking the last cookie.", "accustomed": "I am accustomed to waking up early.", "agricultural": "Corn and wheat are important agricultural crops.", "alcohol": "The nurse cleaned the scrape with rubbing alcohol.", "alligator": "An alligator was resting on the muddy riverbank.", "allowance": "She saves part of her weekly allowance.", "alphabet": "The alphabet has twenty-six letters.", "already": "I have already finished my homework.", "although": "Although it was raining, we still played outside.", "amazement": "The crowd watched the magician in amazement.", "ambulance": "The ambulance raced to the hospital with its siren on.", "ammunition": "The soldiers carried extra ammunition in their packs.", "ache": "My legs ache after the long hike.", "acknowledge": "Please acknowledge that you received my message.", "acquaintance": "She is an acquaintance from my swim class.", "acre": "The farm covers more than one acre of land.", "activity": "Painting is my favorite activity on rainy days.", "actually": "I thought it was Monday, but it is actually Tuesday.", "addition": "We practiced addition and subtraction in math.", "address": "Write your address on the envelope.", "adjustment": "Moving to a new school takes some adjustment.", "anchor": "The sailors dropped the anchor to stop the boat.", "ancient": "We learned about ancient Egypt and the pyramids.", "anniversary": "My parents celebrated their wedding anniversary.", "announcement": "The principal made an announcement over the speaker.", "annual": "The school holds an annual book fair every fall.", "answer": "Raise your hand if you know the answer.", "anxiety": "She felt some anxiety before the big test.", "anxious": "The dog gets anxious during thunderstorms.", "apartment": "They live in an apartment on the fifth floor.", "apologize": "You should apologize for bumping into her.", "agreeable": "The weather was agreeable for a picnic.", "appetite": "Swimming always gives me a big appetite.", "application": "He filled out an application for summer camp.", "appointment": "I have a dentist appointment on Friday.", "appreciate": "I really appreciate your help with the dishes.", "appropriate": "Sneakers are appropriate shoes for gym class.", "approval": "The teacher nodded in approval.", "approximately": "The trip takes approximately three hours.", "aquarium": "We saw sharks and jellyfish at the aquarium.", "arduous": "Climbing the steep mountain was an arduous task.", "argue": "My brothers argue about who gets the front seat.", "arrangement": "Mom made a flower arrangement for the table.", "banana": "I had a banana with my cereal.", "banquet": "The team celebrated at a banquet after the season.", "barefooted": "The children ran barefooted across the sand.", "basement": "We keep our bikes in the basement.", "beautiful": "The sunset was beautiful tonight.", "beggar": "The beggar in the story became a rich prince.", "beginning": "The beginning of the book was very exciting.", "behavior": "The class got a prize for good behavior.", "amusement": "We rode the roller coaster at the amusement park.", "artificial": "The flowers on the table are artificial, not real.", "ascended": "The balloon ascended high into the sky.", "assignment": "Our reading assignment is due tomorrow.", "assistance": "The lost tourist asked for assistance.", "assortment": "The box had an assortment of chocolates.", "astonished": "We were astonished to see snow in April.", "astronaut": "The astronaut floated inside the space station.", "athletes": "The athletes trained hard for the race.", "atmosphere": "The Earth's atmosphere is made of gases.", "attendance": "The teacher takes attendance every morning.", "attitude": "She has a positive attitude about school.", "birthday": "We baked a cake for my sister's birthday.", "biscuits": "Grandma made warm biscuits for breakfast.", "blizzard": "The blizzard dropped two feet of snow.", "blouse": "She wore a white blouse to the concert.", "bomb": "Workers safely removed an old bomb left over from the war.", "boundary": "The fence marks the boundary of our yard.", "bouquet": "He gave his mom a bouquet of roses.", "bracelet": "She made a bracelet out of colorful beads.", "appearance": "The magician's sudden appearance surprised everyone.", "attractive": "The store had an attractive window display.", "audience": "The audience clapped after the play.", "auditorium": "The school play was held in the auditorium.", "authority": "The police officer has the authority to direct traffic.", "autumn": "The leaves turn red and orange in autumn.", "available": "Is this seat available?", "awakening": "The rooster's crow meant it was time for awakening.", "awful": "The milk smelled awful because it was old.", "bacteria": "Washing your hands removes bacteria.", "baggage": "We picked up our baggage at the airport.", "balloon": "The red balloon floated away.", "brilliant": "That was a brilliant idea!", "broadcast": "The game will be broadcast on the radio.", "buffalo": "A herd of buffalo roamed the prairie.", "buffoonery": "The clown's buffoonery made the kids laugh.", "building": "The tallest building in the city has 100 floors.", "bulletin": "Check the bulletin board for club news.", "bureau": "He keeps his socks in the top drawer of the bureau.", "burglar": "The alarm scared the burglar away.", "believe": "I believe you can win the race.", "bicycle": "She rides her bicycle to school.", "bigot": "A bigot treats people unfairly because of who they are.", "cactus": "A cactus can live in the hot, dry desert.", "cafeteria": "We eat lunch in the cafeteria.", "calendar": "Mark the party on the calendar.", "campaign": "She ran a campaign for class president.", "canary": "The yellow canary sang in its cage.", "candidate": "Each candidate gave a short speech.", "capable": "You are capable of doing hard things.", "career": "She wants a career as a veterinarian.", "carnival": "We won a stuffed bear at the carnival.", "carpenter": "The carpenter built a new wooden deck.", "carriage": "The princess rode in a golden carriage.", "cleanliness": "The kitchen was spotless, and the cleanliness impressed us.", "cocoa": "We drank hot cocoa after sledding.", "combination": "I forgot the combination to my lock.", "commercial": "A funny commercial came on during the show.", "community": "Our community planted trees in the park.", "complaint": "The customer made a complaint about the cold soup.", "breakfast": "I ate pancakes for breakfast.", "breath": "Take a deep breath before you dive.", "breathe": "Fish breathe through their gills.", "cartoon": "We watched a cartoon on Saturday morning.", "catalogue": "We ordered new shoes from a catalogue.", "caterpillar": "The caterpillar turned into a butterfly.", "caution": "Use caution when crossing the street.", "ceiling": "A spider was hanging from the ceiling.", "celebration": "We had a big celebration for the new year.", "celery": "I like celery with peanut butter.", "cemetery": "Flowers were placed on graves in the cemetery.", "century": "A century is one hundred years.", "certainly": "I will certainly come to your party.", "certificate": "She got a certificate for perfect attendance.", "climate": "The desert has a hot, dry climate.", "coconut": "We cracked open a coconut to drink the milk.", "comfortable": "This couch is very comfortable.", "committee": "The committee planned the school dance.", "comparison": "In comparison to a mouse, an elephant is huge.", "completely": "The pizza was completely gone in ten minutes.", "burial": "The ancient kings had a grand burial inside the pyramids.", "cabbage": "The rabbit nibbled on a leaf of cabbage.", "cabinet": "The cups are in the kitchen cabinet.", "champion": "She is the chess champion of our school.", "chemistry": "In chemistry, we mixed baking soda and vinegar.", "chocolate": "I love chocolate ice cream.", "choir": "She sings in the school choir.", "chorus": "Everyone joined in on the chorus of the song.", "circulation": "Exercise is good for your blood circulation.", "circumstances": "Under the circumstances, we canceled the game.", "circumstantial": "The detective only had circumstantial evidence.", "circus": "We saw acrobats and clowns at the circus.", "citizen": "A good citizen helps take care of the town.", "civilization": "The Maya built an amazing civilization.", "coarse": "The sandpaper felt coarse and rough.", "coffee": "Dad drinks a cup of coffee every morning.", "commander": "The commander gave orders to the crew.", "communicate": "We communicate with our cousins by video chat.", "competition": "She won first place in the art competition.", "compliment": "He gave me a nice compliment on my drawing.", "concrete": "The sidewalk is made of concrete.", "conscience": "My conscience told me to tell the truth.", "contented": "The cat purred, warm and contented, by the fire.", "convention": "We went to a comic book convention.", "corruptible": "An honest judge is not corruptible.", "crayons": "The box of crayons had sixty-four colors.", "criminal": "The police caught the criminal.", "criticism": "He took the coach's criticism and improved.", "cucumber": "We added cucumber slices to the salad.", "curiosity": "Her curiosity made her ask lots of questions.", "custodian": "The custodian keeps our school clean.", "customer": "The customer paid for her groceries.", "cylinder": "A soup can is shaped like a cylinder.", "cynicism": "His cynicism made him doubt every good news story.", "dandelion": "She blew on the dandelion and made a wish.", "dangerous": "Playing near the busy road is dangerous.", "difference": "Can you spot the difference between the two pictures?", "diploma": "My sister got her diploma at graduation.", "disagreeable": "The grumpy troll was very disagreeable.", "congratulate": "Let's congratulate the winners.", "consequences": "Breaking the rules has consequences.", "continually": "The puppy continually chased its tail.", "conversation": "We had a long conversation on the phone.", "costume": "I wore a dragon costume for Halloween.", "daughter": "Their daughter plays the violin.", "deceived": "The fox deceived the crow with sweet words.", "decision": "Choosing a pet was a hard decision.", "decorate": "Let's decorate the tree with lights.", "decoration": "A paper star was the best decoration.", "definite": "We need a definite answer by Friday.", "definition": "Look up the definition in the dictionary.", "delicious": "The strawberry pie was delicious.", "delightful": "We had a delightful day at the lake.", "delivery": "The pizza delivery came fast.", "deodorant": "He put on deodorant after soccer practice.", "domestic": "A dog is a domestic animal.", "doubtful": "It is doubtful that it will snow in June.", "dramatic": "The movie had a dramatic ending.", "drowned": "The loud music drowned out our voices.", "conquer": "She wanted to conquer her fear of heights.", "consideration": "Thank you for your kind consideration.", "convenience": "The store is open late for our convenience.", "cooperation": "With everyone's cooperation, we cleaned up fast.", "courteous": "It is courteous to hold the door for others.", "descending": "The plane was descending toward the runway.", "descent": "The hikers made a slow descent down the hill.", "description": "Write a description of your favorite place.", "descriptive": "Use descriptive words in your story.", "desirable": "A sunny room is very desirable.", "desperate": "The thirsty plants were desperate for rain.", "destination": "Our destination is Grandma's house.", "detective": "The detective solved the mystery.", "deterrence": "The bright lights are a deterrence to raccoons.", "diaspora": "Families from the diaspora keep their traditions alive far from home.", "dictionary": "I looked the word up in the dictionary.", "eighteen": "There are eighteen students in my class.", "elaborate": "They built an elaborate sandcastle with towers.", "electric": "We have an electric car.", "electrically": "The toy train is electrically powered.", "disappear": "The magician made the rabbit disappear.", "disappointment": "Losing the game was a big disappointment.", "discount": "The shoes were on sale at a discount.", "discovered": "We discovered a bird's nest in the tree.", "dissatisfied": "The customer was dissatisfied with the cold food.", "distinguish": "Can you distinguish between the twins?", "document": "Sign your name at the bottom of the document.", "endurance": "Running a marathon takes endurance.", "energetic": "The energetic puppy never stops playing.", "engine": "The car engine roared to life.", "engineer": "The engineer designed a new bridge.", "enormous": "A blue whale is enormous.", "entertainment": "The magician provided the entertainment at the party.", "enthusiastic": "The fans were enthusiastic about the game.", "entrance": "Meet me at the front entrance.", "envelope": "Put the letter in the envelope.", "equipment": "Put the sports equipment back in the closet.", "escalate": "The argument began to escalate into shouting.", "farming": "Farming requires hard work every day.", "fascinated": "She was fascinated by the stars.", "dungarees": "The farmer wore blue dungarees.", "earnest": "He made an earnest promise to help.", "eclipse": "We watched the solar eclipse with special glasses.", "economical": "Riding a bike is an economical way to travel.", "education": "A good education opens many doors.", "effective": "Ice is an effective way to reduce swelling.", "efficient": "The new dishwasher is quick and efficient.", "especially": "I love fruit, especially mangoes.", "essential": "Water is essential for life.", "establish": "The settlers wanted to establish a new town.", "examination": "The doctor gave me an examination.", "exceedingly": "The test was exceedingly difficult.", "excellent": "You did an excellent job!", "exception": "Everyone came except me, and I was the only exception.", "excitement": "The kids screamed with excitement.", "exercise": "Exercise keeps your body strong.", "exhausted": "After the race, I was exhausted.", "expensive": "That car is too expensive for us.", "figures": "Add up the figures to get the total.", "filthily": "The muddy dog shook itself filthily all over the rug.", "elephant": "The elephant sprayed water with its trunk.", "elevator": "We took the elevator to the tenth floor.", "embarrass": "Please don't embarrass me in front of my friends.", "embroidery": "The pillow had pretty flower embroidery.", "emergency": "In an emergency, call 911.", "employees": "The store has twenty employees.", "employment": "She found employment at the bakery.", "experience": "Visiting the ocean was an amazing experience.", "explanation": "The teacher gave a clear explanation.", "explosion": "The volcano erupted in a huge explosion.", "extraordinary": "The magician had extraordinary skills.", "extremely": "It is extremely hot today.", "factory": "Cars are made in a factory.", "failure": "A failure is just a chance to learn.", "familiar": "The song sounded familiar.", "family": "My family eats dinner together.", "famous": "She wants to be a famous singer.", "fancy": "We ate at a fancy restaurant.", "foreign": "He speaks a foreign language.", "forgotten": "I have forgotten my lunch at home.", "fashion": "Her fashion style is bright and colorful.", "favorite": "Blue is my favorite color.", "feather": "A feather floated down from the sky.", "feature": "The best feature of the house is the big yard.", "february": "February is the shortest month of the year.", "federal": "The federal government is in Washington, D.C.", "festival": "We went to the summer music festival.", "fiction": "Fairy tales are a kind of fiction.", "fierce": "The lion let out a fierce roar.", "frontier": "The pioneers traveled to the western frontier.", "fudge": "Grandpa made chocolate fudge.", "funeral": "Many people came to the funeral to remember her.", "furnace": "The furnace keeps our house warm in winter.", "furniture": "We bought new furniture for the living room.", "gallon": "We bought a gallon of milk.", "garage": "Dad parks the car in the garage.", "garbage": "Please take out the garbage.", "garment": "A coat is a warm garment.", "gasoline": "The car needs more gasoline.", "gathering": "The family gathering was fun.", "finally": "We finally got to the beach.", "finish": "I will finish my homework before dinner.", "fixed": "Dad fixed my broken bike.", "flashlight": "Use a flashlight in the dark cave.", "flavor": "Strawberry is my favorite ice cream flavor.", "float": "Ducks float on the pond.", "fluid": "Drink plenty of fluid when you are sick.", "following": "The ducklings were following their mother.", "foolish": "It was foolish to go out without a coat.", "generally": "I generally go to bed at eight o'clock.", "generation": "My grandparents are from an older generation.", "generous": "It was generous of you to share.", "genius": "Einstein was a genius.", "geography": "In geography, we learned about rivers and mountains.", "ghost": "The ghost story gave me chills.", "giant": "The giant climbed down the beanstalk.", "giraffe": "The giraffe ate leaves from the tall tree.", "glasses": "Grandma wears glasses to read.", "glorious": "It was a glorious sunny morning.", "golden": "The field of wheat looked golden.", "formerly": "The library was formerly a train station.", "fortunate": "We are fortunate to have such good friends.", "forward": "Take one step forward.", "fought": "The two kittens fought over the toy.", "freeze": "Water will freeze when it gets very cold.", "freight": "The freight train carried coal.", "frequent": "We are frequent visitors at the library.", "friendly": "Our new neighbor is very friendly.", "frighten": "Loud noises frighten my dog.", "gorgeous": "The flowers in the garden are gorgeous.", "gossip": "It is unkind to spread gossip.", "government": "The government builds roads and schools.", "governor": "The governor leads our state.", "graceful": "The ballerina was very graceful.", "gradually": "The ice gradually melted in the sun.", "graduation": "We cheered at my cousin's graduation.", "grammar": "Check your grammar and punctuation.", "granite": "The kitchen counter is made of granite.", "grapefruit": "I ate half a grapefruit for breakfast.", "grasshopper": "A grasshopper jumped across the path.", "gratitude": "We showed our gratitude with a thank-you card.", "greatest": "That was the greatest day ever.", "greedy": "The greedy dragon kept all the gold.", "groceries": "We carried the groceries into the kitchen.", "ground": "The apple fell to the ground.", "guardian": "A parent or guardian must sign the form.", "guessed": "I guessed the right answer.", "guilty": "The dog looked guilty next to the torn pillow.", "guitar": "He plays the guitar in a band.", "gymnasium": "We play basketball in the gymnasium.", "hammer": "Use a hammer to pound in the nail.", "houses": "The houses on our street are all different colors.", "human": "Every human needs food and sleep.", "humorous": "The book was so humorous that I laughed out loud.", "iceberg": "The ship sailed past a huge iceberg.", "ignorant": "I was ignorant of the new rule until today.", "illustrate": "She will illustrate the story with drawings.", "imagination": "Use your imagination to invent a creature.", "handkerchief": "He wiped his nose with a handkerchief.", "handsome": "The prince was tall and handsome.", "happiest": "My birthday is the happiest day of the year.", "happiness": "The puppy brought us so much happiness.", "hardware": "We bought nails at the hardware store.", "hatch": "The chicks will hatch from their eggs soon.", "hatchet": "The camper chopped wood with a hatchet.", "haunted": "They say the old house is haunted.", "headache": "Loud music gives me a headache.", "headquarters": "The company's headquarters is in New York.", "healthful": "Fruits and vegetables are healthful foods.", "important": "It is important to wear a seatbelt.", "impossible": "Nothing is impossible if you keep trying.", "impression": "She made a great first impression.", "improvement": "Your handwriting shows a lot of improvement.", "incident": "The teacher wrote a report about the incident.", "including": "Everyone came, including my grandparents.", "inconvenient": "The late bus was very inconvenient.", "healthy": "Eating vegetables keeps you healthy.", "height": "The nurse measured my height.", "heroes": "Firefighters are real-life heroes.", "hesitate": "Don't hesitate to ask for help.", "highest": "Mount Everest is the highest mountain in the world.", "hippopotamus": "The hippopotamus stayed cool in the river.", "hoping": "I am hoping for sunny weather tomorrow.", "hopping": "The bunny was hopping across the lawn.", "horrid": "The medicine had a horrid taste.", "horror": "She screamed in horror at the spider.", "hospital": "The doctor works at the hospital.", "industrial": "The factory is in the industrial part of town.", "industries": "Farming and fishing are important industries here.", "influence": "Good friends are a good influence.", "information": "The librarian helped me find information.", "initial": "My initial idea was to build a fort.", "injury": "He hurt his knee, and the injury took weeks to heal.", "innocent": "The puppy looked innocent, but it chewed my shoe.", "imitation": "The parrot did a funny imitation of my voice.", "immediate": "The fire needed immediate attention.", "immigrants": "Many immigrants came to America by ship.", "impatient": "The impatient kids kept asking if we were there yet.", "instruction": "Read each instruction carefully.", "instrument": "The piano is my favorite instrument.", "insulated": "The insulated bottle kept my water cold.", "insurance": "Car insurance helps pay for repairs.", "intelligence": "Dolphins are known for their intelligence.", "intelligent": "Crows are very intelligent birds.", "interested": "I am interested in learning about space.", "interfere": "Please don't interfere with their game.", "interior": "The interior of the car was clean.", "international": "The airport has international flights.", "interrupt": "It is rude to interrupt someone who is talking.", "knight": "The knight rode a white horse.", "knitting": "Grandma is knitting me a scarf.", "knives": "Be careful with sharp knives.", "knowledge": "Reading books increases your knowledge.", "laboratory": "The scientist worked in a laboratory.", "incorrect": "Two of my answers were incorrect.", "increase": "The price of apples will increase.", "independence": "We celebrate Independence Day on the Fourth of July.", "independent": "She is independent and likes to do things herself.", "interview": "The reporter will interview the mayor.", "introduction": "The introduction of the book was short.", "invalid": "The coupon was invalid because it had expired.", "invention": "The light bulb was an important invention.", "investigation": "The police began an investigation.", "invitation": "I got an invitation to her party.", "irrigation": "Farmers use irrigation to water their crops.", "island": "We took a boat to the island.", "issue": "The new issue of the magazine came today.", "jacket": "Wear a jacket because it is chilly.", "jealous": "He felt jealous of his brother's new bike.", "laundry": "Please fold the clean laundry.", "lawyer": "The lawyer spoke in court.", "league": "She plays in a soccer league.", "learned": "I learned how to swim this summer.", "legislature": "The state legislature passed a new law.", "inquire": "I will inquire about the swimming lessons.", "inspection": "The car passed its safety inspection.", "instantly": "The lights came on instantly.", "institution": "A university is an institution of learning.", "jeopardy": "The storm put the picnic in jeopardy.", "jewelry": "She keeps her jewelry in a small box.", "journey": "The journey across the ocean took weeks.", "jubilant": "The jubilant fans cheered the win.", "juice": "I drink orange juice every morning.", "kettle": "The kettle whistled when the water boiled.", "kindergarten": "My little brother is in kindergarten.", "kindly": "The librarian kindly helped me find a book.", "kingdom": "The king ruled a large kingdom.", "kitchen": "Mom is cooking dinner in the kitchen.", "knead": "You must knead the dough before baking bread.", "liquid": "Water is a liquid.", "literature": "We read poems in literature class.", "location": "The map shows the location of the treasure.", "lodge": "We stayed at a ski lodge in the mountains.", "laborious": "Moving all the boxes was laborious work.", "ladder": "He climbed the ladder to the roof.", "language": "She speaks more than one language.", "languish": "Plants will languish without water.", "lantern": "The lantern lit up our tent.", "laughed": "Everyone laughed at the funny joke.", "magazine": "I read a magazine about animals.", "magnificent": "The castle was magnificent.", "maintain": "It takes work to maintain a garden.", "majority": "The majority of the class voted for pizza.", "management": "The store's management fixed the problem.", "manager": "The manager helped us find a table.", "manicure": "She painted her nails for a manicure.", "mansion": "The rich family lived in a mansion.", "manufacture": "This factory will manufacture toys.", "manufacturing": "Manufacturing cars takes many workers.", "marble": "The statue is carved from marble.", "microscope": "We looked at a leaf under the microscope.", "middle": "Stand in the middle of the line.", "midnight": "The clock struck midnight.", "lettuce": "The rabbit ate the lettuce in the garden.", "librarian": "The librarian read us a story.", "library": "I borrowed three books from the library.", "license": "You need a license to drive a car.", "lieutenant": "The lieutenant gave orders to the soldiers.", "lightning": "Lightning flashed across the sky.", "marriage": "Their marriage has lasted fifty years.", "married": "My aunt got married in June.", "marshmallows": "We roasted marshmallows over the campfire.", "martyr": "A martyr is someone who suffers for what they believe in.", "marvelous": "We had a marvelous time at the zoo.", "material": "This shirt is made of soft material.", "mathematics": "Mathematics is my favorite subject.", "mattress": "I bounced on the new mattress.", "meadow": "Wildflowers grew in the meadow.", "measles": "The measles vaccine keeps kids from getting sick.", "measure": "Use a ruler to measure the line.", "mischievous": "The mischievous monkey stole a banana.", "miserable": "I felt miserable when I had the flu.", "missile": "The rocket looked like a giant missile.", "losing": "I hate losing my keys.", "lumber": "They bought lumber to build a treehouse.", "luncheon": "The ladies met for a luncheon.", "macaroni": "I love macaroni and cheese.", "machine": "The washing machine is very loud.", "machinery": "The farm has lots of heavy machinery.", "mechanical": "The toy robot is mechanical.", "medicine": "Take your medicine after dinner.", "medium": "I'll have a medium pizza, please.", "membership": "We have a membership at the zoo.", "memory": "My favorite memory is our trip to the beach.", "mentioned": "She mentioned that she likes cats.", "merchant": "The merchant sold silk and spices.", "merely": "It was merely a scratch.", "message": "I left a message for my friend.", "messenger": "The messenger delivered the letter.", "method": "What method did you use to solve the problem?", "monument": "The Washington Monument is very tall.", "mortgage": "My parents pay the mortgage on our house each month.", "mosquito": "A mosquito bit my arm.", "mighty": "The mighty lion ruled the jungle.", "military": "My uncle served in the military.", "million": "The city has over a million people.", "mineral": "Salt is a mineral.", "minister": "The minister spoke at the wedding.", "minute": "Please wait one minute.", "minutes": "The cookies bake for ten minutes.", "mischief": "The twins are always getting into mischief.", "mustard": "I like mustard on my hot dog.", "mysterious": "We heard a mysterious noise in the attic.", "napkin": "Put your napkin on your lap.", "narrow": "The path was too narrow for two bikes.", "national": "The bald eagle is our national bird.", "naturally": "My hair is naturally curly.", "naughty": "The naughty puppy chewed my shoe.", "navigation": "The ship used the stars for navigation.", "necessarily": "Big dogs are not necessarily scary.", "necessary": "Sleep is necessary for good health.", "necessity": "Water is a necessity for all living things.", "omitted": "I accidentally omitted my name from the paper.", "missionary": "The missionary traveled to faraway villages.", "mistake": "Everyone makes a mistake sometimes.", "mittens": "Wear your mittens in the snow.", "mixture": "Stir the mixture until it is smooth.", "moccasins": "He wore soft leather moccasins.", "moderate": "Cook the soup at a moderate heat.", "moisture": "The sponge soaked up the moisture.", "monotonous": "The long drive was monotonous.", "neglected": "The neglected garden was full of weeds.", "neighbor": "Our neighbor has a friendly dog.", "neither": "Neither of us wanted to go first.", "nephew": "My aunt says I am her favorite nephew.", "nervous": "I was nervous before my piano recital.", "nonsense": "The silly poem was full of nonsense words.", "noticed": "I noticed a bird on the windowsill.", "nourishing": "Soup is a warm, nourishing meal.", "nuisance": "The buzzing fly was a nuisance.", "numerous": "There are numerous stars in the sky.", "nursery": "The baby sleeps in the nursery.", "orphan": "The orphan found a loving new family.", "motorcycle": "The motorcycle zoomed down the road.", "mountain": "We hiked up the mountain.", "movement": "The dancer's every movement was smooth.", "multiplication": "I practiced my multiplication tables.", "municipal": "We swim at the municipal pool.", "museum": "We saw dinosaur bones at the museum.", "mushrooms": "Mushrooms grow in damp, shady places.", "musician": "The musician played the trumpet.", "obedience": "Our dog went to obedience school.", "objection": "Does anyone have an objection to the plan?", "obliged": "I am much obliged for your help.", "observation": "The scientist wrote down each observation.", "observe": "We went outside to observe the moon.", "obtained": "She obtained a library card.", "occasionally": "We occasionally eat out on Fridays.", "occupation": "Her occupation is teaching.", "occurrence": "Snow in Florida is a rare occurrence.", "offering": "The neighbors brought cookies as a welcome offering.", "officers": "Two police officers directed traffic.", "parliament": "The British Parliament meets in London.", "onions": "Chopping onions makes my eyes water.", "operation": "The doctor performed an operation on his knee.", "opinion": "In my opinion, cats are the best pets.", "opportunities": "Camp gives kids many opportunities to try new things.", "opposition": "The team faced tough opposition in the finals.", "ordinarily": "I ordinarily walk to school.", "organization": "The organization helps feed hungry families.", "organized": "Her desk is neat and organized.", "originally": "My family is originally from Poland.", "oriole": "The orange oriole built a nest in the tree.", "peninsula": "Florida is a peninsula.", "penmanship": "Her penmanship is neat and easy to read.", "perfectly": "The dress fit perfectly.", "performance": "The band gave a great performance.", "perilous": "Crossing the icy bridge was perilous.", "permission": "Ask for permission before you leave the table.", "personality": "My dog has a playful personality.", "petroleum": "Gasoline is made from petroleum.", "pheasants": "We saw two pheasants in the field.", "phonograph": "Grandpa played old records on his phonograph.", "oxygen": "We need oxygen to breathe.", "oyster": "A pearl can grow inside an oyster.", "package": "A package arrived in the mail.", "pageant": "The class put on a holiday pageant.", "pajamas": "I put on my pajamas before bed.", "pamphlets": "The museum gave us pamphlets about the exhibits.", "papoose": "The baby rode on her mother's back in a papoose.", "parachute": "The skydiver opened his parachute.", "paragraph": "Write one paragraph about your weekend.", "parallel": "Railroad tracks are parallel lines.", "physical": "Soccer is a very physical sport.", "pickle": "I had a pickle with my sandwich.", "picnic": "We had a picnic in the park.", "picture": "I drew a picture of my cat.", "piece": "May I have a piece of cake?", "pierce": "The thorn can pierce your skin.", "pigeon": "A pigeon landed on the statue.", "pillow": "I fluffed my pillow before bed.", "pineapple": "The pineapple was sweet and juicy.", "pioneer": "The pioneer family traveled west in a wagon.", "particular": "Is there a particular book you want?", "particularly": "I particularly like chocolate chip cookies.", "passage": "Read the passage and answer the questions.", "pasture": "The cows grazed in the pasture.", "patience": "Teaching a puppy takes patience.", "peace": "We want peace, not war.", "peanuts": "Elephants like to eat peanuts.", "peasants": "In the story, the peasants worked in the king's fields.", "peculiar": "The soup had a peculiar smell.", "pencil": "Sharpen your pencil before the test.", "pitcher": "Pour the lemonade from the pitcher.", "planned": "We planned a surprise party.", "plantation": "The museum is on an old plantation where enslaved people once worked.", "plaster": "The walls were covered with fresh plaster.", "plateau": "A plateau is high, flat land.", "playground": "We played on the swings at the playground.", "pleasant": "We had a pleasant walk in the park.", "please": "Please pass the salt.", "pleasure": "It was a pleasure to meet you.", "pledge": "We say the Pledge of Allegiance each morning.", "photograph": "We took a photograph of the sunset.", "pneumonia": "He was sick with pneumonia for two weeks.", "pocket": "I found a coin in my pocket.", "poisonous": "Some mushrooms are poisonous.", "political": "The two candidates had a political debate.", "politics": "My parents like to talk about politics.", "popular": "That song is very popular.", "population": "The population of our town is growing.", "porcupine": "A porcupine is covered in sharp quills.", "position": "What position do you play in soccer?", "positive": "Try to stay positive.", "possess": "The wizard seemed to possess magic powers.", "pressure": "Check the air pressure in your bike tires.", "prettier": "The garden looks prettier in spring.", "previous": "The previous owner painted the house blue.", "primitive": "Early humans used primitive tools.", "principal": "The principal visited our classroom.", "principle": "Honesty is an important principle.", "prisoner": "The prisoner escaped from the tower.", "privilege": "Staying up late is a special privilege.", "pistol": "The starter fired a pistol to begin the race.", "possession": "My bike is my favorite possession.", "possibilities": "The possibilities are endless.", "possible": "Is it possible to finish today?", "postage": "You need postage to mail a letter.", "postpone": "We had to postpone the game because of rain.", "posture": "Sit up straight for good posture.", "poultry": "Chicken and turkey are kinds of poultry.", "pounds": "My dog weighs forty pounds.", "powder": "Baby powder is soft and white.", "practically": "The movie is practically over.", "practicing": "She is practicing the piano.", "produce": "We buy fresh produce at the farmer's market.", "product": "The store sells a new cleaning product.", "production": "The school production of Annie was a hit.", "profession": "Nursing is a caring profession.", "profitable": "The lemonade stand was very profitable.", "prominent": "The mayor is a prominent person in town.", "promotion": "Dad got a promotion at work.", "promptly": "The show began promptly at seven.", "plentiful": "Apples are plentiful in the fall.", "prairie": "Tall grass waved across the prairie.", "praise": "The coach gave the team lots of praise.", "preamble": "We memorized the Preamble to the Constitution.", "precious": "The ring is precious to my grandmother.", "predicate": "The predicate tells what the subject does.", "preferred": "I preferred the blue shirt over the red one.", "prejudice": "Prejudice means judging people unfairly.", "preparation": "The play took weeks of preparation.", "presence": "We felt the presence of someone in the room.", "preserve": "We need to preserve our forests.", "president": "The president gave a speech.", "proportion": "The drawing was out of proportion.", "proposed": "She proposed a new idea for recess.", "proposition": "The class voted on the proposition.", "prosperous": "The town became prosperous after the mine opened.", "protection": "Sunscreen gives protection from the sun.", "proteins": "Beans and eggs are full of proteins.", "provided": "The school provided free lunch.", "provision": "The hikers packed a provision of food and water.", "probably": "It will probably rain tomorrow.", "procedure": "Follow the fire drill procedure.", "procession": "The wedding procession walked down the aisle.", "pronunciation": "Check the pronunciation in the dictionary.", "propelled": "The boat was propelled by the wind.", "property": "This land is private property.", "publication": "The newspaper is a daily publication.", "pudding": "I had chocolate pudding for dessert.", "pumpkin": "We carved a pumpkin for Halloween.", "puncture": "A nail made a puncture in the tire.", "punishment": "His punishment was no video games for a week.", "puppies": "The puppies played in the yard.", "purchase": "We made a purchase at the toy store.", "purpose": "The purpose of a seatbelt is to keep you safe.", "pursuit": "The cat ran in pursuit of the mouse.", "puzzle": "We finished a 500-piece puzzle.", "pyramids": "The pyramids in Egypt are very old.", "quality": "These shoes are made of high quality leather.", "quantities": "The bakery makes cookies in large quantities.", "quantity": "Check the quantity of eggs in the recipe.", "recognize": "I didn't recognize you with your new haircut.", "recommend": "I recommend this book to everyone.", "recommendation": "The librarian gave me a book recommendation.", "recreation": "The park is a place for recreation.", "reference": "A dictionary is a good reference book.", "referred": "The doctor referred us to a specialist.", "refreshments": "Refreshments will be served after the show.", "quarrel": "The two friends had a quarrel over the ball.", "quarter": "I found a quarter under the couch.", "question": "Raise your hand to ask a question.", "quickly": "The rabbit ran away quickly.", "quotation": "Put quotation marks around what she said.", "quote": "My favorite quote is on my bedroom wall.", "racial": "The class talked about racial fairness and equal rights.", "radiator": "The radiator keeps the room warm.", "ragged": "His old jeans were ragged and torn.", "rapidly": "The river was flowing rapidly.", "rattlesnake": "The rattlesnake shook its tail.", "refutation": "Her refutation proved that his argument was wrong.", "registration": "Soccer registration closes on Friday.", "regretted": "I regretted eating so much candy.", "relative": "My cousin is my favorite relative.", "religious": "The family celebrates religious holidays together.", "remarkable": "The magician's trick was remarkable.", "remembrance": "We planted a tree in remembrance of Grandpa.", "reader": "She is a fast reader.", "reality": "His dream of flying became a reality.", "realize": "I didn't realize it was so late.", "reasonable": "That price seems reasonable.", "rebel": "The rebel refused to follow the king's orders.", "receipt": "Keep the receipt in case you return it.", "receive": "Did you receive my letter?", "recently": "We recently moved to a new house.", "reception": "There was a reception after the wedding.", "recess": "We play tag at recess.", "recipe": "Grandma shared her cookie recipe.", "require": "Plants require sunlight to grow.", "research": "I did research for my report on sharks.", "reservation": "We made a reservation at the restaurant.", "residence": "The White House is the president's residence.", "resolution": "My New Year's resolution is to read more.", "resources": "The library has many resources for students.", "respectfully": "Please listen respectfully when others speak.", "refrigeration": "Milk needs refrigeration to stay fresh.", "refrigerator": "Put the leftovers in the refrigerator.", "refugees": "The refugees found safety in a new country.", "refused": "The toddler refused to eat his peas.", "revenue": "The bake sale brought in a lot of revenue.", "revolver": "The cowboy in the movie carried a revolver.", "rheumatism": "Grandpa's rheumatism makes his joints sore.", "rooster": "The rooster crowed at sunrise.", "sacrifice": "She made a sacrifice to help her friend.", "saddle": "He put a saddle on the horse.", "safety": "Wear a helmet for safety.", "salary": "The job pays a good salary.", "sandwiches": "We packed sandwiches for the trip.", "sanitary": "The hospital keeps everything sanitary.", "satellite": "A satellite orbits the Earth.", "separation": "The separation from her best friend made her sad.", "september": "School starts in September.", "seriously": "Take your homework seriously.", "serum": "The doctor gave the patient a special serum.", "servant": "The servant brought the king his dinner.", "reminder": "Mom set a reminder on her phone.", "rendered": "The artist rendered the sky in bright colors.", "representative": "She is our class representative.", "requested": "I requested a window seat.", "satisfaction": "Finishing the project gave me great satisfaction.", "satisfied": "I was satisfied with my test score.", "saucer": "Put the cup on the saucer.", "sausage": "We had sausage and eggs for breakfast.", "scaffold": "The painters stood on a scaffold.", "scarcely": "I could scarcely see through the fog.", "scarf": "Wrap a scarf around your neck.", "scarlet": "The cardinal has scarlet feathers.", "scenery": "The mountain scenery was beautiful.", "scheduled": "The game is scheduled for Saturday.", "scheme": "The fox came up with a sneaky scheme.", "shopping": "We went shopping for school supplies.", "shortage": "There was a shortage of water during the drought.", "shoulder": "She carried her bag on her shoulder.", "shrieking": "The kids were shrieking on the roller coaster.", "signature": "Sign your signature at the bottom.", "responsibility": "Feeding the dog is my responsibility.", "responsible": "She is responsible for watering the plants.", "restaurant": "We ate at a Mexican restaurant.", "revenge": "The villain wanted revenge on the hero.", "scientist": "The scientist studied volcanoes.", "scissors": "Cut the paper with scissors.", "scratch": "The cat left a scratch on my arm.", "scribbling": "The toddler was scribbling on the wall.", "search": "We had to search for the lost keys.", "secretary": "The school secretary answered the phone.", "secured": "He secured the boat to the dock.", "selection": "The store has a big selection of books.", "selfish": "It is selfish not to share.", "semester": "The semester ends in June.", "separate": "Separate the white clothes from the dark ones.", "sixty": "There are sixty minutes in an hour.", "skeleton": "The human skeleton has 206 bones.", "skiing": "We went skiing in the mountains.", "skillful": "The skillful juggler kept five balls in the air.", "sleigh": "Santa rides in a sleigh.", "several": "I have several books to read.", "shelter": "We found shelter from the rain.", "shepherd": "The shepherd watched over his sheep.", "sheriff": "The sheriff protected the town.", "shining": "The sun was shining brightly.", "shipments": "The store gets new shipments every week.", "source": "The sun is our main source of light.", "sparrow": "A sparrow landed on the fence.", "specialize": "Some doctors specialize in treating children.", "specimen": "We looked at a rock specimen under a magnifying glass.", "speedometer": "The speedometer showed we were going fifty miles per hour.", "spices": "Cinnamon and pepper are spices.", "spinach": "Popeye eats spinach to get strong.", "splendid": "We had a splendid time at the fair.", "sprained": "She sprained her ankle playing soccer.", "spread": "Spread butter on the toast.", "sprinkle": "Sprinkle sugar on top of the cookies.", "stubborn": "The stubborn mule would not move.", "submarine": "The submarine dove under the sea.", "subscribers": "The magazine has thousands of subscribers.", "silverware": "Set the silverware next to each plate.", "sincere": "She gave a sincere apology.", "sincerely": "End the letter with Sincerely and your name.", "sincerity": "I could hear the sincerity in his voice.", "singular": "The word cat is singular, and cats is plural.", "situation": "We made the best of a bad situation.", "square": "A square has four equal sides.", "squash": "We grew squash in our garden.", "squeak": "I heard a mouse squeak.", "squeeze": "Squeeze the lemon to get the juice.", "standard": "The car has a standard radio.", "stationary": "The exercise bike is stationary, so it doesn't move.", "stationery": "She wrote the letter on pretty stationery.", "statue": "The Statue of Liberty is in New York.", "steady": "Hold the ladder steady.", "stenographer": "The stenographer typed every word said in court.", "suggestion": "Do you have a suggestion for dinner?", "superintendent": "The superintendent visited all the schools.", "supermarket": "We buy groceries at the supermarket.", "slipper": "The dog carried away my slipper.", "smooth": "The stone felt smooth in my hand.", "sneeze": "Pepper makes me sneeze.", "social": "My sister is very social and loves parties.", "society": "Kind people make a better society.", "somersaults": "The gymnast did three somersaults in a row.", "sticky": "The honey made my hands sticky.", "stock": "The store is out of stock on that toy.", "stockings": "We hung our stockings by the fireplace.", "stomach": "My stomach hurts from eating too much.", "storage": "We keep old toys in storage.", "straight": "Draw a straight line with a ruler.", "straighten": "Please straighten up your room.", "strawberries": "We picked fresh strawberries.", "strength": "Lifting weights builds strength.", "stretch": "Stretch your arms before you run.", "struggle": "It was a struggle to open the jar.", "surrounded": "The castle was surrounded by a moat.", "swallow": "Take a sip of water to help you swallow the pill.", "sweater": "I wore a warm sweater.", "subscription": "We have a subscription to a kids' magazine.", "substance": "Honey is a sticky substance.", "substitute": "We had a substitute teacher today.", "subtraction": "Subtraction means taking away.", "succeed": "If you practice, you will succeed.", "successful": "The bake sale was very successful.", "suddenly": "Suddenly, the lights went out.", "sufficient": "We have sufficient food for the trip.", "tedious": "Sorting the buttons was a tedious job.", "telegram": "Long ago, people sent news by telegram.", "telegraph": "The telegraph sent messages using dots and dashes.", "telephone": "The telephone rang during dinner.", "telescope": "We looked at the moon through a telescope.", "television": "We watched a movie on television.", "temperature": "The temperature dropped below freezing.", "temporary": "The cast on his arm is only temporary.", "terrible": "The storm caused terrible damage.", "territory": "The wolves guarded their territory.", "terrorism": "Airport security helps protect people from terrorism.", "tomato": "I put a slice of tomato on my burger.", "superstition": "It is a superstition that black cats are bad luck.", "supervisor": "The supervisor checked the workers' progress.", "supplied": "The teacher supplied the paper and glue.", "supposed": "We are supposed to be quiet in the library.", "surface": "Leaves floated on the surface of the pond.", "surprise": "We threw a surprise party for Dad.", "surrender": "The army was forced to surrender.", "surround": "Tall trees surround our cabin.", "testimony": "The witness gave testimony in court.", "textile": "Cotton is used to make textile products like towels.", "thanksgiving": "We eat turkey on Thanksgiving.", "thermometer": "The thermometer showed I had a fever.", "thimble": "She wore a thimble while sewing.", "thorough": "Give your room a thorough cleaning.", "though": "I stayed outside even though it was cold.", "thought": "I thought about my answer carefully.", "thoughtful": "It was thoughtful of you to bring flowers.", "thoughts": "She wrote her thoughts in a diary.", "thousand": "There are one thousand people in the stadium.", "transportation": "Buses are a form of public transportation.", "swimming": "We went swimming in the lake.", "sympathize": "I sympathize with you for losing your game.", "sympathy": "We sent a card to show our sympathy.", "syntax": "Syntax is the way words are put together in a sentence.", "taught": "My dad taught me how to ride a bike.", "teacher": "My teacher reads to us every day.", "teaching": "She is teaching her brother to tie his shoes.", "teaspoon": "Add one teaspoon of salt.", "thread": "She used red thread to sew the button.", "throat": "I have a sore throat.", "through": "We walked through the forest.", "throughout": "It rained throughout the night.", "thumb": "I hurt my thumb when I closed the door.", "thursday": "We have art class on Thursday.", "tickled": "My brother tickled my feet.", "tissues": "Keep a box of tissues nearby when you have a cold.", "toaster": "Put the bread in the toaster.", "tobacco": "Smoking tobacco is bad for your lungs.", "toboggan": "We raced down the hill on a toboggan.", "tuesday": "The library is closed on Tuesday.", "tomorrow": "We will go to the zoo tomorrow.", "tongue": "The dog licked me with its tongue.", "tonsillitis": "She had tonsillitis and a sore throat.", "tough": "The steak was too tough to chew.", "tourist": "The tourist took pictures of the bridge.", "tournament": "Our team won the soccer tournament.", "toward": "The puppy ran toward me.", "tractor": "The farmer drove a tractor.", "tragedy": "The sinking of the Titanic was a tragedy.", "transferred": "She transferred to a new school.", "understanding": "Thank you for being so understanding.", "understood": "I finally understood the math problem.", "undoubtedly": "She is undoubtedly the fastest runner.", "unexpected": "We had an unexpected visitor.", "unfortunate": "It was unfortunate that it rained on our picnic.", "uniform": "The players wore a blue uniform.", "unimportant": "Don't worry about unimportant details.", "universal": "A smile is a universal sign of friendship.", "university": "My brother goes to the university.", "unnecessary": "It is unnecessary to shout.", "traveling": "We are traveling to Florida this summer.", "treasurer": "The treasurer counts the club's money.", "treatment": "The doctor gave me treatment for my rash.", "tremble": "My hands tremble when I'm nervous.", "trimmed": "Dad trimmed the bushes.", "triumph": "Winning the game was a great triumph.", "tropical": "Parrots live in tropical forests.", "trouble": "The kitten is always getting into trouble.", "trough": "The pigs ate from a trough.", "trousers": "He wore gray trousers.", "unusual": "It is unusual to see a moose here.", "usually": "I usually walk the dog after school.", "vacant": "The house next door is vacant.", "vacation": "We went to the beach on vacation.", "vaccinated": "Our dog was vaccinated at the vet.", "vaccination": "I got a vaccination at the doctor's office.", "valuable": "The painting is very valuable.", "vanity": "The queen's vanity made her stare in the mirror all day.", "varnish": "Dad put varnish on the wooden table.", "vegetable": "Carrots are my favorite vegetable.", "typewriter": "Grandma wrote letters on a typewriter.", "umbrella": "Take an umbrella in case it rains.", "unable": "I was unable to reach the top shelf.", "unanimous": "The vote was unanimous; everyone said yes.", "uncertain": "I am uncertain about the answer.", "uncomfortable": "These shoes are uncomfortable.", "unconscious": "The boxer was knocked unconscious.", "unconstitutional": "The court said the law was unconstitutional.", "underneath": "The cat is hiding underneath the bed.", "understand": "Do you understand the directions?", "vehicle": "A bus is a large vehicle.", "venison": "Venison is meat from a deer.", "venture": "Let's venture into the woods.", "verdict": "The jury reached a verdict.", "vibration": "I felt the vibration of the phone.", "vicinity": "Is there a store in the vicinity?", "victory": "The team celebrated their victory.", "vigorous": "Running is a vigorous exercise.", "vinegar": "Add vinegar to the salad dressing.", "vintage": "She wore a vintage dress from the 1950s.", "unpleasant": "The medicine had an unpleasant taste.", "vision": "Eagles have excellent vision.", "visitors": "We had visitors over for dinner.", "vitamins": "Oranges are full of vitamins.", "voluntary": "Joining the club is voluntary.", "voyage": "The ship made a long voyage across the sea.", "vulgar": "Using vulgar words at school is not allowed.", "washing": "Dad is washing the dishes.", "watching": "We were watching the fireworks.", "watermelon": "We ate watermelon on a hot day.", "wealthy": "The wealthy man gave money to the library.", "weapons": "The knights carried swords and other weapons.", "witch": "The witch flew on her broomstick.", "witness": "The witness saw the car crash.", "wolves": "The wolves howled at the moon.", "woman": "The woman walked her dog.", "women": "The women played soccer in the park.", "wonderful": "We had a wonderful time.", "wondering": "I was wondering if you could help me.", "wooden": "We sat on a wooden bench.", "vegetation": "The rainforest is full of thick vegetation.", "weather": "The weather is sunny today.", "weaving": "She is weaving a basket.", "wednesday": "We have gym class on Wednesday.", "weigh": "How much do you weigh?", "weight": "The weight of the backpack hurt my back.", "welfare": "The animal shelter cares about the welfare of pets.", "whale": "A whale is the largest animal in the ocean.", "whatever": "You can pick whatever flavor you want.", "wheelbarrow": "We moved the dirt in a wheelbarrow.", "which": "Which book do you want to read?", "while": "Please wait while I get my coat.", "worse": "The storm got worse overnight.", "wouldn't": "I wouldn't go outside without a coat.", "wrapped": "She wrapped the present in shiny paper.", "writing": "I am writing a story about a dragon.", "written": "The note was written in pencil.", "wrong": "I took a wrong turn and got lost.", "years": "My brother is ten years old.", "yeast": "Yeast makes the bread dough rise.", "visible": "The stars were visible in the night sky.", "whipping": "The wind was whipping through the trees.", "whiskers": "The cat's whiskers twitched.", "whisper": "Please whisper in the library.", "whistle": "The coach blew the whistle.", "wholesale": "The store buys its goods wholesale.", "wicker": "We sat on a wicker chair on the porch.", "wigwam": "Some Native American peoples lived in a wigwam made of bark.", "wilderness": "The bear lived in the wilderness.", "willow": "A willow tree grew by the river.", "winner": "The winner got a gold medal.", "winning": "Our team is winning the game.", "young": "The young bird learned to fly.", "younger": "My younger sister is five.", "yourself": "Be proud of yourself.", "yourselves": "Help yourselves to some cookies.", "youth": "In his youth, Grandpa lived on a farm.", "youthful": "Grandma has a youthful smile.", "woolen": "I wore woolen socks in the snow.", "worked": "We worked hard on the project.", "worried": "Mom was worried when I was late.", "yellow": "The sun is bright yellow.", "yesterday": "Yesterday was my birthday.", "yield": "Cars must yield to people crossing the street."};
+  const MASTER_LIST = { id: MASTER_ID, name: "Grade 5 Master List", builtin: true, createdAt: "9999", words: MASTER_WORDS.map(w => ({ word: w, sentence: MASTER_SENTENCES[w] || "" })) };
+  const LS_TESTSIZE = "sns_testsize_v1";
+  function getTestSize() { try { return parseInt(localStorage.getItem(LS_TESTSIZE) || "20", 10) || 20; } catch (e) { return 20; } }
+  function setTestSize(n) { try { localStorage.setItem(LS_TESTSIZE, String(n)); } catch (e) {} }
+
+  // Latest result per word across all master-list sessions: true = spelled right last time.
+  function masterStatus(sessions) {
+    const status = {};
+    sessions.filter(s => s.listId === MASTER_ID).sort((a, b) => (a.date || "").localeCompare(b.date || "")).forEach(s => {
+      (s.tested || []).forEach(w => { status[w] = true; });
+      (s.missed || []).forEach(m => { status[m.word] = false; });
+    });
+    return status;
+  }
+  // Build a test batch: up to a third are words she missed last time,
+  // the rest are words she hasn't been tested on yet, then anything else.
+  async function pickMasterBatch(n) {
+    const status = masterStatus(await Store.allSessions());
+    const missed = shuffle(MASTER_WORDS.filter(w => status[w] === false));
+    const unseen = shuffle(MASTER_WORDS.filter(w => !(w in status)));
+    const known = shuffle(MASTER_WORDS.filter(w => status[w] === true));
+    const batch = missed.slice(0, Math.ceil(n / 3));
+    for (const pool of [unseen, missed.slice(batch.length), known]) {
+      for (const w of pool) { if (batch.length >= n) break; batch.push(w); }
+    }
+    return batch.map(w => ({ word: w, sentence: MASTER_SENTENCES[w] || "" }));
+  }
+
+  /* ================= voice choice ================= */
+  const LS_VOICE = "sns_voice_v1";
+  const LS_RATE = "sns_rate_v1";
+  const NOVELTY = /albert|bad news|bahh|bells|boing|bubbles|cellos|good news|jester|organ|superstar|trinoids|whisper|wobble|zarvox|fred|junior|ralph|kathy|grandma|grandpa|rocko|shelley|flo\b|eddy|reed|sandy|hysterical|deranged|pipe/i;
+  let voices = [];
+  function voiceScore(v) {
+    const n = v.name;
+    let s = 0;
+    if (/premium/i.test(n)) s += 100;
+    if (/enhanced/i.test(n)) s += 80;
+    if (/natural|neural/i.test(n)) s += 90;
+    if (/online/i.test(n)) s += 20;
+    if (/^google/i.test(n)) s += 50;
+    if (/\b(ava|zoe|evan|allison|samantha|nathan|joelle|noelle|susan|tom|aria|jenny|guy|michelle)\b/i.test(n)) s += 15;
+    if (/^en[-_]US/i.test(v.lang)) s += 10;
+    else if (/^en[-_](GB|AU|CA|IE)/i.test(v.lang)) s += 4;
+    if (v.localService === false && !/google|online|natural/i.test(n)) s -= 5;
+    return s;
+  }
+  function loadVoices() {
+    if (!("speechSynthesis" in window)) return;
+    voices = window.speechSynthesis.getVoices()
+      .filter(v => /^en/i.test(v.lang) && !NOVELTY.test(v.name))
+      .sort((a, b) => voiceScore(b) - voiceScore(a) || a.name.localeCompare(b.name));
+    renderVoicePicker();
+  }
+  function chosenVoice() {
+    if (!voices.length) return null;
+    let saved = null;
+    try { saved = localStorage.getItem(LS_VOICE); } catch (e) {}
+    return (saved && voices.find(v => v.voiceURI === saved)) || voices[0];
+  }
+  function chosenRate() {
+    try { return parseFloat(localStorage.getItem(LS_RATE) || "0.85") || 0.85; } catch (e) { return 0.85; }
+  }
+  function renderVoicePicker() {
+    const sel = document.getElementById("voiceSelect");
+    if (!sel) return;
+    const cur = chosenVoice();
+    sel.innerHTML = "";
+    if (!voices.length) {
+      const o = document.createElement("option"); o.textContent = "Default voice"; sel.appendChild(o); return;
+    }
+    voices.forEach(v => {
+      const o = document.createElement("option");
+      o.value = v.voiceURI;
+      o.textContent = (voiceScore(v) >= 50 ? "★ " : "") + v.name + " (" + v.lang + ")";
+      if (cur && v.voiceURI === cur.voiceURI) o.selected = true;
+      sel.appendChild(o);
+    });
+    document.getElementById("rateSelect").value = String(chosenRate());
+  }
+  if ("speechSynthesis" in window) {
+    loadVoices();
+    window.speechSynthesis.addEventListener && window.speechSynthesis.addEventListener("voiceschanged", loadVoices);
+  }
+  document.getElementById("voiceSelect").addEventListener("change", e => {
+    try { localStorage.setItem(LS_VOICE, e.target.value); } catch (err) {}
+    speak("Accommodation");
+  });
+  document.getElementById("rateSelect").addEventListener("change", e => {
+    try { localStorage.setItem(LS_RATE, e.target.value); } catch (err) {}
+  });
+  document.getElementById("btnTestVoice").addEventListener("click", () => {
+    speak("Your word is: accommodation. The hotel had comfortable accommodation.", { rate: chosenRate() });
+  });
+
+  /* ================= speech ================= */
+  // iPadOS/iOS Safari only allows speechSynthesis to start when the call
+  // happens synchronously inside a user tap — no setTimeout/await in between —
+  // so every call site below speaks immediately inside its click handler.
+  function speak(text, opts) {
+    if (!("speechSynthesis" in window)) { toast("This browser can't read words aloud."); return; }
+    const synth = window.speechSynthesis;
+    if (synth.speaking || synth.pending) synth.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.rate = (opts && opts.rate) || chosenRate();
+    u.pitch = 1;
+    const v = chosenVoice();
+    if (v) { u.voice = v; u.lang = v.lang; } else { u.lang = "en-US"; }
+    synth.speak(u);
+  }
+  // Safari on iPad sometimes needs its voice list "warmed up" by an empty
+  // utterance tied to the very first tap before real speech will play.
+  let speechPrimed = false;
+  function primeSpeechOnce() {
+    if (speechPrimed || !("speechSynthesis" in window)) return;
+    speechPrimed = true;
+    try {
+      const u = new SpeechSynthesisUtterance("");
+      u.volume = 0;
+      window.speechSynthesis.speak(u);
+    } catch (e) { /* ignore */ }
+    document.removeEventListener("pointerdown", primeSpeechOnce);
+  }
+  document.addEventListener("pointerdown", primeSpeechOnce, { once: true });
+
+  /* ================= HOME ================= */
+  async function renderHome() {
+    const [lists, sessions] = await Promise.all([Store.listLists(), Store.allSessions()]);
+    document.getElementById("statLists").textContent = lists.length;
+    document.getElementById("listEmpty").hidden = true;
+    document.getElementById("statSessions").textContent = sessions.length;
+    let totalCorrect = 0, totalWords = 0;
+    sessions.forEach(s => { totalCorrect += (s.correct || 0); totalWords += (s.total || 0); });
+    document.getElementById("statAccuracy").textContent = totalWords ? Math.round((totalCorrect / totalWords) * 100) + "%" : "—";
+
+    const grid = document.getElementById("listGrid");
+    grid.innerHTML = "";
+    document.getElementById("listEmpty").hidden = lists.length > 0;
+
+    const lastByList = {};
+    sessions.forEach(s => {
+      if (!lastByList[s.listId] || s.date > lastByList[s.listId].date) lastByList[s.listId] = s;
+    });
+
+    lists.forEach(list => {
+      const wordCount = (list.words || []).length;
+      const last = lastByList[list.id];
+      const card = document.createElement("div");
+      card.className = "card list-card";
+      const pctText = last ? Math.round((last.correct / last.total) * 100) + "% last time" : "Not practiced yet";
+      const pillClass = last ? (last.correct / last.total >= 0.8 ? "pill-good" : (last.correct / last.total >= 0.5 ? "pill-neutral" : "pill-bad")) : "pill-neutral";
+      card.innerHTML =
+        '<h3>' + escapeHtml(list.name) + '</h3>' +
+        '<div class="meta">' + wordCount + ' word' + (wordCount === 1 ? "" : "s") + '</div>' +
+        '<span class="pill ' + pillClass + '">' + pctText + '</span>' +
+        '<div class="actions">' +
+          '<button class="btn btn-primary btn-sm" data-act="practice">▶ Practice</button>' +
+          '<button class="btn btn-ghost btn-sm" data-act="share">🔗 Share</button>' +
+          '<button class="btn btn-ghost btn-sm" data-act="delete">Delete</button>' +
+        '</div>';
+      if (list.builtin) {
+        const status = masterStatus(sessions);
+        const mastered = MASTER_WORDS.filter(w => status[w] === true).length;
+        const toReview = MASTER_WORDS.filter(w => status[w] === false).length;
+        card.querySelector(".meta").textContent = wordCount.toLocaleString() + " words · " + mastered + " spelled right · " + toReview + " to review";
+        card.querySelector('[data-act="delete"]').remove();
+        card.querySelector('[data-act="share"]').remove();
+        const size = document.createElement("div");
+        size.className = "size-row";
+        size.innerHTML = '<label>Words per test</label><select>' + [10, 15, 20, 30, 50].map(n => '<option value="' + n + '"' + (n === getTestSize() ? " selected" : "") + '>' + n + '</option>').join("") + '</select>' +
+          '<div class="mastery-track" style="flex-basis:100%;"><div class="mastery-fill" style="width:' + (mastered / wordCount * 100).toFixed(1) + '%"></div></div>';
+        size.querySelector("select").addEventListener("change", e => setTestSize(parseInt(e.target.value, 10)));
+        card.insertBefore(size, card.querySelector(".actions"));
+      }
+      card.querySelector('[data-act="practice"]').addEventListener("click", () => startPractice(list));
+      const delBtn = card.querySelector('[data-act="delete"]');
+      if (delBtn) {
+      let confirming = false;
+      delBtn.addEventListener("click", async () => {
+        if (!confirming) {
+          confirming = true;
+          delBtn.textContent = "Confirm delete?";
+          delBtn.classList.add("btn-danger");
+          setTimeout(() => { confirming = false; delBtn.textContent = "Delete"; delBtn.classList.remove("btn-danger"); }, 3000);
+          return;
+        }
+        await Store.deleteList(list.id);
+        toast("List deleted");
+        renderHome();
+      });
+      }
+      if (!list.builtin) card.querySelector('[data-act="share"]').addEventListener("click", () => shareList(list));
+      grid.appendChild(card);
+    });
+  }
+
+  function escapeHtml(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  }
+
+  document.getElementById("btnNewList").addEventListener("click", () => {
+    resetNewListForm();
+    showScreen("newlist");
+  });
+  document.getElementById("btnImportCode").addEventListener("click", () => {
+    const code = window.prompt("Paste the list code someone sent you:");
+    if (code) importFromCode(code);
+  });
+
+  /* ================= share / import a list by link ================= */
+  // Lets a list travel to a device that has no Claude account at all: the
+  // words + sentences are packed into the URL itself, so opening the link
+  // needs nothing but a browser. Photo-scanning still needs Claude, so the
+  // idea is: scan the photo once wherever Claude is available, then share
+  // the resulting list to any other device this way.
+  function encodeListForShare(list) {
+    const payload = { n: list.name, w: (list.words || []).map(w => [w.word, w.sentence || ""]) };
+    return btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
+  }
+  function decodeListFromShare(b64) {
+    const payload = JSON.parse(decodeURIComponent(escape(atob(b64))));
+    return {
+      name: String(payload.n || "Shared list"),
+      words: (payload.w || []).map(pair => ({ word: String(pair[0] || ""), sentence: String(pair[1] || "") })).filter(w => w.word)
+    };
+  }
+  // A plain text code (not a link) so a list can travel between two totally
+  // separate copies of this app — e.g. this hosted copy and a standalone
+  // HTML file on someone else's device — with no shared origin required.
+  async function shareList(list) {
+    const code = "SNS1:" + encodeListForShare(list);
+    try {
+      await navigator.clipboard.writeText(code);
+      toast("List code copied — paste it into Messages/Mail, then have her tap “Import a list” on her copy");
+    } catch (e) {
+      window.prompt("Copy this code and send it to her:", code);
+    }
+  }
+  function importFromCode(raw) {
+    const code = (raw || "").trim();
+    if (!code) return;
+    const payload = code.startsWith("SNS1:") ? code.slice(5) : code;
+    try {
+      const decoded = decodeListFromShare(payload);
+      if (!decoded.words.length) { toast("That code didn't have any words in it"); return; }
+      resetNewListForm();
+      document.getElementById("listNameInput").value = decoded.name;
+      reviewWords = decoded.words;
+      renderReviewTable();
+      showScreen("newlist");
+      toast("Imported “" + decoded.name + "” — check it over and tap Save list");
+    } catch (e) {
+      toast("That code looks broken — ask for a new one");
+    }
+  }
+  function checkForImportLink() {
+    // Kept for the case where both people happen to use the exact same
+    // hosted URL — harmless no-op otherwise.
+    const hash = location.hash;
+    if (!hash.startsWith("#import=")) return;
+    history.replaceState(null, "", location.pathname);
+    importFromCode(hash.slice("#import=".length));
+  }
+
+  /* ================= NEW LIST ================= */
+  let reviewWords = []; // [{word, sentence}]
+  let photoFile = null;
+
+  function resetNewListForm() {
+    document.getElementById("listNameInput").value = "";
+    document.getElementById("wordsTextarea").value = "";
+    document.getElementById("reviewSection").hidden = true;
+    document.getElementById("photoPreview").hidden = true;
+    document.getElementById("photoInput").value = "";
+    document.getElementById("btnAnalyzePhoto").disabled = true;
+    photoFile = null;
+    reviewWords = [];
+    selectTab("type");
+  }
+
+  function selectTab(which) {
+    const isType = which === "type";
+    document.getElementById("tabType").setAttribute("aria-selected", isType);
+    document.getElementById("tabPhoto").setAttribute("aria-selected", !isType);
+    document.getElementById("paneType").hidden = !isType;
+    document.getElementById("panePhoto").hidden = isType;
+  }
+  document.getElementById("tabType").addEventListener("click", () => selectTab("type"));
+  document.getElementById("tabPhoto").addEventListener("click", () => selectTab("photo"));
+
+  document.getElementById("btnBuildFromText").addEventListener("click", () => {
+    const raw = document.getElementById("wordsTextarea").value;
+    const words = raw.split(/[\n,]/).map(w => w.trim()).filter(Boolean);
+    if (!words.length) { toast("Type at least one word first"); return; }
+    reviewWords = words.map(w => ({ word: w, sentence: "" }));
+    renderReviewTable();
+  });
+
+  document.getElementById("photoInput").addEventListener("change", e => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    photoFile = file;
+    const preview = document.getElementById("photoPreview");
+    preview.src = URL.createObjectURL(file);
+    preview.hidden = false;
+    document.getElementById("btnAnalyzePhoto").disabled = false;
+  });
+
+  document.getElementById("btnAnalyzePhoto").addEventListener("click", async () => {
+    if (!sample || !photoFile) return;
+    const btn = document.getElementById("btnAnalyzePhoto");
+    btn.disabled = true;
+    btn.textContent = "Reading photo…";
+    try {
+      const prompt = 'This image shows a list of spelling words — it might be handwritten, printed on a worksheet, or on a whiteboard. ' +
+        'Read every distinct spelling word you can find, in the order they appear on the page. Ignore titles, dates, numbering, and instructions. ' +
+        'For each word, also write one short, simple example sentence a child could use to understand what the word means, using the word naturally in the sentence. ' +
+        'Reply with ONLY a JSON array, like: [{"word": "elephant", "sentence": "The elephant sprayed water with its trunk."}]. ' +
+        'If you cannot find any words, reply with [].';
+      const result = await sample.json(prompt, { images: photoFile, modelTier: "default" });
+      const list = Array.isArray(result) ? result : [];
+      const words = list
+        .map(item => ({
+          word: String((item && item.word) || "").trim(),
+          sentence: String((item && item.sentence) || "").trim()
+        }))
+        .filter(item => item.word);
+      if (!words.length) {
+        toast("Couldn't find any words in that photo — try a clearer shot or type them instead.");
+      } else {
+        reviewWords = words;
+        renderReviewTable();
+        toast("Found " + words.length + " word" + (words.length === 1 ? "" : "s"));
+      }
+    } catch (e) {
+      const code = e && e.code;
+      if (code === "not_granted") toast("Photo reading needs permission — try again and allow access.");
+      else if (code === "images_unavailable") toast("This view can't send photos to Claude.");
+      else if (code === "image_rejected") toast("That photo couldn't be used — try a different one.");
+      else toast("Couldn't read that photo. Try again or type the words instead.");
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "✨ Read words from photo";
+    }
+  });
+
+  function renderReviewTable() {
+    document.getElementById("reviewSection").hidden = false;
+    const tbody = document.getElementById("reviewTbody");
+    tbody.innerHTML = "";
+    reviewWords.forEach((item, i) => addReviewRow(item, i));
+    document.getElementById("reviewSection").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  function addReviewRow(item, i) {
+    const tbody = document.getElementById("reviewTbody");
+    const tr = document.createElement("tr");
+    tr.innerHTML =
+      '<td class="num-col">' + (i + 1) + '</td>' +
+      '<td><input type="text" class="w-word" value="' + escapeAttr(item.word) + '"></td>' +
+      '<td><input type="text" class="w-sentence" value="' + escapeAttr(item.sentence || "") + '" placeholder="—"></td>' +
+      '<td class="del-col"><button class="row-del" aria-label="Remove word">✕</button></td>';
+    tr.querySelector(".row-del").addEventListener("click", () => { tr.remove(); });
+    tbody.appendChild(tr);
+  }
+  function escapeAttr(s) { return escapeHtml(s).replace(/"/g, "&quot;"); }
+
+  document.getElementById("btnAddRow").addEventListener("click", () => {
+    if (document.getElementById("reviewSection").hidden) renderReviewTable();
+    addReviewRow({ word: "", sentence: "" }, document.getElementById("reviewTbody").children.length);
+  });
+
+  document.getElementById("btnSuggestSentences").addEventListener("click", async () => {
+    if (!sample) return;
+    const rows = Array.from(document.getElementById("reviewTbody").children);
+    const words = rows.map(r => r.querySelector(".w-word").value.trim());
+    const missingIdx = words.map((w, i) => (w && !rows[i].querySelector(".w-sentence").value.trim()) ? i : -1).filter(i => i >= 0);
+    if (!missingIdx.length) { toast("Every word already has a sentence"); return; }
+    const btn = document.getElementById("btnSuggestSentences");
+    btn.disabled = true;
+    btn.textContent = "Thinking…";
+    try {
+      const target = missingIdx.map(i => words[i]);
+      const prompt = 'Write one short, simple example sentence for each of these spelling words, using each word naturally so a child understands its meaning. ' +
+        'Reply with ONLY a JSON array of strings, in the same order, one sentence per word:\n' + JSON.stringify(target);
+      const sentences = await sample.json(prompt, { modelTier: "quick" });
+      if (Array.isArray(sentences)) {
+        missingIdx.forEach((rowIdx, k) => {
+          if (sentences[k]) rows[rowIdx].querySelector(".w-sentence").value = String(sentences[k]);
+        });
+        toast("Sentences added");
+      }
+    } catch (e) {
+      toast("Couldn't generate sentences right now.");
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "✨ Suggest sentences";
+    }
+  });
+
+  document.getElementById("btnSaveList").addEventListener("click", async () => {
+    const name = document.getElementById("listNameInput").value.trim() || "Untitled list";
+    const rows = Array.from(document.getElementById("reviewTbody").children);
+    const words = rows.map(r => ({
+      word: r.querySelector(".w-word").value.trim(),
+      sentence: r.querySelector(".w-sentence").value.trim()
+    })).filter(w => w.word);
+    if (!words.length) { toast("Add at least one word before saving"); return; }
+    await Store.saveList({ name, words });
+    toast("Saved “" + name + "”");
+    showScreen("home");
+  });
+
+  /* ================= PRACTICE ================= */
+  let session = null; // { list, order:[{word,sentence}], idx, answers:[] }
+
+  function shuffle(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  let masterBatch = null;
+  function startPractice(list, wordsOverride) {
+    if (list.builtin && !wordsOverride) {
+      // Use the batch prepared in advance so speech still starts inside the tap (iPad).
+      const words = masterBatch || shuffle(MASTER_LIST.words).slice(0, getTestSize());
+      masterBatch = null;
+      prepareMasterBatch();
+      return startPractice(list, words);
+    }
+    const words = wordsOverride || list.words || [];
+    if (!words.length) { toast("This list has no words"); return; }
+    session = { list, order: shuffle(words), idx: 0, answers: [] };
+    showScreen("practice");
+    renderPracticeWord();
+  }
+
+  function renderPracticeWord() {
+    const total = session.order.length;
+    const cur = session.order[session.idx];
+    document.getElementById("progressLabel").textContent = "WORD " + (session.idx + 1) + " OF " + total;
+    document.getElementById("progressFill").style.width = Math.round((session.idx / total) * 100) + "%";
+    document.getElementById("answerInput").value = "";
+    document.getElementById("btnSentence").hidden = !cur.sentence;
+    document.getElementById("btnSubmitWord").textContent = (session.idx === total - 1) ? "Finish" : "Next →";
+    // Speak immediately (same tap that got us here) so iPad Safari allows it;
+    // focusing the input can happen a beat later without affecting audio.
+    speak(cur.word);
+    setTimeout(() => { document.getElementById("answerInput").focus(); }, 50);
+  }
+
+  document.getElementById("btnSpeak").addEventListener("click", () => {
+    if (session) speak(session.order[session.idx].word);
+  });
+  document.getElementById("btnSentence").addEventListener("click", () => {
+    if (session) speak(session.order[session.idx].sentence, { rate: Math.min(1, chosenRate() + 0.1) });
+  });
+
+  function submitCurrentWord() {
+    const typed = document.getElementById("answerInput").value.trim();
+    const cur = session.order[session.idx];
+    session.answers.push({ word: cur.word, sentence: cur.sentence, typed, correct: typed.toLowerCase() === cur.word.toLowerCase() });
+    if (session.idx < session.order.length - 1) {
+      session.idx++;
+      renderPracticeWord();
+    } else {
+      finishPractice();
+    }
+  }
+  document.getElementById("btnSubmitWord").addEventListener("click", submitCurrentWord);
+  document.getElementById("answerInput").addEventListener("keydown", e => {
+    if (e.key === "Enter") { e.preventDefault(); submitCurrentWord(); }
+  });
+  document.getElementById("btnQuitPractice").addEventListener("click", () => {
+    window.speechSynthesis && window.speechSynthesis.cancel();
+    showScreen("home");
+  });
+
+  async function finishPractice() {
+    window.speechSynthesis && window.speechSynthesis.cancel();
+    const total = session.answers.length;
+    const correct = session.answers.filter(a => a.correct).length;
+    const missed = session.answers.filter(a => !a.correct);
+    document.getElementById("resultScore").textContent = correct + " / " + total;
+    document.getElementById("resultPct").textContent = Math.round((correct / total) * 100) + "% correct";
+
+    const reviewWrap = document.getElementById("reviewList");
+    reviewWrap.innerHTML = "";
+    document.getElementById("resultReviewWrap").hidden = missed.length === 0;
+    if (missed.length === 0) {
+      reviewWrap.innerHTML = '<div class="empty" style="padding:26px;"><div class="glyph">🎉</div>Perfect score — every word spelled correctly!</div>';
+    } else {
+      missed.forEach(m => {
+        const row = document.createElement("div");
+        row.className = "review-row";
+        row.innerHTML =
+          '<span class="badge">✗</span>' +
+          '<div><span class="lbl">You typed</span><span class="typed">' + escapeHtml(m.typed || "(blank)") + '</span></div>' +
+          '<div><span class="lbl">Correct spelling</span><span class="correct">' + escapeHtml(m.word) + '</span></div>';
+        reviewWrap.appendChild(row);
+      });
+    }
+
+    document.getElementById("btnRetryMissed").hidden = missed.length === 0;
+    document.getElementById("btnRetryAll").textContent = session.list.builtin ? "Next " + getTestSize() + " words" : "Practice full list again";
+    document.getElementById("btnRetryAll").onclick = () => startPractice(session.list);
+    document.getElementById("btnRetryMissed").onclick = () => startPractice(session.list, missed.map(m => ({ word: m.word, sentence: m.sentence })));
+
+    await Store.addSession({
+      listId: session.list.id,
+      listName: session.list.name,
+      date: new Date().toISOString(),
+      total,
+      correct,
+      missed: missed.map(m => ({ word: m.word, typed: m.typed })),
+      tested: session.answers.filter(a => a.correct).map(a => a.word)
+    });
+    if (session.list.builtin) prepareMasterBatch();
+
+    showScreen("results");
+  }
+
+  /* ================= HISTORY ================= */
+  let currentHistoryListId = null;
+
+  async function renderHistoryPicker() {
+    const lists = await Store.listLists();
+    const picker = document.getElementById("historyPicker");
+    picker.innerHTML = "";
+    if (!lists.length) {
+      document.getElementById("historyEmpty").hidden = false;
+      document.getElementById("historyContent").hidden = true;
+      return;
+    }
+    document.getElementById("historyEmpty").hidden = true;
+    if (!currentHistoryListId || !lists.find(l => l.id === currentHistoryListId)) {
+      currentHistoryListId = lists[0].id;
+    }
+    lists.forEach(list => {
+      const b = document.createElement("button");
+      b.className = "tab";
+      b.setAttribute("aria-selected", list.id === currentHistoryListId);
+      b.textContent = list.name;
+      b.addEventListener("click", () => { currentHistoryListId = list.id; renderHistoryPicker(); });
+      picker.appendChild(b);
+    });
+    await renderHistoryContent(currentHistoryListId);
+  }
+
+  async function renderHistoryContent(listId) {
+    const sessions = await Store.listSessions(listId);
+    const content = document.getElementById("historyContent");
+    if (!sessions.length) {
+      content.hidden = true;
+      document.getElementById("historyEmpty").hidden = false;
+      return;
+    }
+    content.hidden = false;
+    document.getElementById("historyEmpty").hidden = true;
+
+    const tbody = document.getElementById("sessionTbody");
+    tbody.innerHTML = "";
+    sessions.slice().reverse().forEach(s => {
+      const tr = document.createElement("tr");
+      const pct = Math.round((s.correct / s.total) * 100);
+      const dateStr = new Date(s.date).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
+      const missedWords = (s.missed || []).map(m => m.word).join(", ") || "—";
+      tr.innerHTML =
+        '<td>' + dateStr + '</td>' +
+        '<td class="mono">' + s.correct + '/' + s.total + ' (' + pct + '%)</td>' +
+        '<td>' + escapeHtml(missedWords) + '</td>';
+      tbody.appendChild(tr);
+    });
+
+    document.getElementById("trendChart").innerHTML = buildTrendChart(sessions);
+  }
+
+  function buildTrendChart(sessions) {
+    const w = 800, h = 180, padL = 34, padR = 16, padT = 16, padB = 26;
+    const plotW = w - padL - padR, plotH = h - padT - padB;
+    const pts = sessions.map(s => Math.round((s.correct / s.total) * 100));
+    const n = pts.length;
+    const x = i => padL + (n === 1 ? plotW / 2 : (i / (n - 1)) * plotW);
+    const y = v => padT + plotH - (v / 100) * plotH;
+
+    const gridLines = [0, 50, 100].map(v =>
+      '<line x1="' + padL + '" x2="' + (w - padR) + '" y1="' + y(v) + '" y2="' + y(v) + '" stroke="var(--border)" stroke-width="1"></line>' +
+      '<text x="' + (padL - 8) + '" y="' + (y(v) + 4) + '" text-anchor="end" font-size="11" fill="var(--ink-muted)" font-family="JetBrains Mono, monospace">' + v + '%</text>'
+    ).join("");
+
+    let path = "";
+    let area = "M " + x(0) + " " + y(0) + " ";
+    pts.forEach((v, i) => {
+      path += (i === 0 ? "M " : "L ") + x(i) + " " + y(v) + " ";
+      area += "L " + x(i) + " " + y(v) + " ";
+    });
+    area += "L " + x(n - 1) + " " + y(0) + " Z";
+
+    const dots = pts.map((v, i) => {
+      const isLast = i === n - 1;
+      return '<circle cx="' + x(i) + '" cy="' + y(v) + '" r="' + (isLast ? 5 : 3) + '" fill="var(--accent)" stroke="var(--surface)" stroke-width="' + (isLast ? 2 : 1) + '"></circle>';
+    }).join("");
+
+    const lastLabel = '<text x="' + x(n - 1) + '" y="' + (y(pts[n - 1]) - 12) + '" text-anchor="end" font-size="12" font-weight="700" fill="var(--accent)" font-family="JetBrains Mono, monospace">' + pts[n - 1] + '%</text>';
+
+    return '<svg viewBox="0 0 ' + w + ' ' + h + '" style="width:100%; height:auto; display:block;" role="img" aria-label="Score trend chart">' +
+      gridLines +
+      '<path d="' + area + '" fill="var(--accent)" opacity="0.12"></path>' +
+      '<path d="' + path + '" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"></path>' +
+      dots + lastLabel +
+      '</svg>';
+  }
+
+  function prepareMasterBatch() { pickMasterBatch(getTestSize()).then(b => { masterBatch = b; }); }
+  document.addEventListener("change", e => { if (e.target.closest && e.target.closest(".size-row")) prepareMasterBatch(); });
+
+  /* ================= boot ================= */
+  initCapabilities();
+  renderHome();
+  prepareMasterBatch();
+  checkForImportLink();
+})();
+</script>
+
+</body></html>
