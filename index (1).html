@@ -1,0 +1,1392 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found]){display:none!important}</style></head><body>
+<title>Say &amp; Spell</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f7fa;
+    --surface: #ffffff;
+    --surface-2: #e8ecf2;
+    --ink: #1c2430;
+    --ink-secondary: #55606e;
+    --ink-muted: #8993a1;
+    --border: #dce2ea;
+    --accent: #2d5fe0;
+    --accent-strong: #1e46b8;
+    --accent-ink: #ffffff;
+    --accent-wash: #e8eefd;
+    --good: #1e9e64;
+    --good-wash: #e4f7ee;
+    --bad: #e24b4b;
+    --bad-wash: #fdecec;
+    --warn: #c98a1e;
+    --warn-wash: #fbf0dc;
+    --shadow: 0 1px 2px rgba(28,36,48,0.06), 0 8px 24px -12px rgba(28,36,48,0.18);
+    color-scheme: light;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #12161d;
+      --surface: #1a1f29;
+      --surface-2: #222836;
+      --ink: #ecedf2;
+      --ink-secondary: #aeb6c2;
+      --ink-muted: #737c8a;
+      --border: #2b3140;
+      --accent: #6e93ff;
+      --accent-strong: #8fabff;
+      --accent-ink: #0d1220;
+      --accent-wash: #202a44;
+      --good: #4adb98;
+      --good-wash: #163326;
+      --bad: #ff6b6b;
+      --bad-wash: #3a1f20;
+      --warn: #e8b95b;
+      --warn-wash: #3a2f16;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 12px 28px -12px rgba(0,0,0,0.55);
+      color-scheme: dark;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #12161d;
+    --surface: #1a1f29;
+    --surface-2: #222836;
+    --ink: #ecedf2;
+    --ink-secondary: #aeb6c2;
+    --ink-muted: #737c8a;
+    --border: #2b3140;
+    --accent: #6e93ff;
+    --accent-strong: #8fabff;
+    --accent-ink: #0d1220;
+    --accent-wash: #202a44;
+    --good: #4adb98;
+    --good-wash: #163326;
+    --bad: #ff6b6b;
+    --bad-wash: #3a1f20;
+    --warn: #e8b95b;
+    --warn-wash: #3a2f16;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 12px 28px -12px rgba(0,0,0,0.55);
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  h1, h2, h3, .display {
+    font-family: "Fredoka", "Segoe UI", system-ui, sans-serif;
+    font-weight: 600;
+    text-wrap: balance;
+    letter-spacing: 0.01em;
+    margin: 0;
+  }
+
+  .mono { font-family: "JetBrains Mono", ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+
+  button {
+    font-family: inherit;
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+  button:focus-visible, input:focus-visible, a:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  input[type="text"] {
+    font-family: inherit;
+    color: var(--ink);
+    background: var(--surface);
+    /* 16px+ stops iOS/iPadOS Safari from auto-zooming the page on focus */
+    font-size: 16px;
+  }
+
+  .app {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 20px 20px 64px;
+  }
+
+  /* ---------- top bar ---------- */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 4px 2px 22px;
+    flex-wrap: wrap;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .brand-mark {
+    width: 38px; height: 38px;
+    border-radius: 11px;
+    background: var(--accent);
+    color: var(--accent-ink);
+    display: flex; align-items: center; justify-content: center;
+    font-family: "Fredoka", sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    flex-shrink: 0;
+    box-shadow: var(--shadow);
+  }
+  .brand h1 { font-size: 22px; }
+
+  .nav {
+    display: flex;
+    gap: 6px;
+    background: var(--surface-2);
+    padding: 4px;
+    border-radius: 12px;
+  }
+  .nav button {
+    border: none;
+    background: transparent;
+    color: var(--ink-secondary);
+    padding: 8px 16px;
+    border-radius: 9px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: "Fredoka", sans-serif;
+    transition: background 0.15s, color 0.15s;
+  }
+  .nav button[aria-current="true"] {
+    background: var(--surface);
+    color: var(--ink);
+    box-shadow: var(--shadow);
+  }
+
+  .screen { display: none; }
+  .screen.active { display: block; animation: fade-in 0.2s ease-out; }
+  @keyframes fade-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) {
+    .screen.active { animation: none; }
+  }
+
+  /* ---------- cards / buttons ---------- */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-radius: 11px;
+    border: 1px solid transparent;
+    padding: 11px 18px;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: "Fredoka", sans-serif;
+    transition: transform 0.08s ease, filter 0.15s;
+  }
+  .btn:active { transform: translateY(1px); }
+  .btn-primary { background: var(--accent); color: var(--accent-ink); }
+  .btn-primary:hover { filter: brightness(1.06); }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-ghost { background: var(--surface-2); color: var(--ink); }
+  .btn-ghost:hover { filter: brightness(0.97); }
+  .btn-danger { background: var(--bad-wash); color: var(--bad); }
+  .btn-sm { padding: 7px 13px; font-size: 13px; border-radius: 9px; }
+  .btn-block { width: 100%; }
+  .btn-icon { width: 40px; height: 40px; padding: 0; border-radius: 999px; background: var(--surface-2); color: var(--ink); font-size: 16px; }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    font-family: "Fredoka", sans-serif;
+  }
+  .pill-good { background: var(--good-wash); color: var(--good); }
+  .pill-bad { background: var(--bad-wash); color: var(--bad); }
+  .pill-neutral { background: var(--surface-2); color: var(--ink-secondary); }
+
+  .empty {
+    text-align: center;
+    padding: 48px 24px;
+    color: var(--ink-secondary);
+  }
+  .empty .glyph { font-size: 34px; margin-bottom: 10px; }
+
+  /* ---------- home ---------- */
+  .stat-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 22px;
+  }
+  .stat-tile {
+    padding: 16px;
+  }
+  .stat-tile .num { font-size: 26px; font-weight: 700; }
+  .stat-tile .label { font-size: 12.5px; color: var(--ink-secondary); text-transform: uppercase; letter-spacing: 0.04em; margin-top: 2px; }
+
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin: 28px 0 12px;
+  }
+  .section-head h2 { font-size: 17px; color: var(--ink-secondary); }
+
+  .list-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 14px;
+  }
+  .list-card {
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .list-card h3 { font-size: 17px; }
+  .list-card .meta { font-size: 13px; color: var(--ink-muted); }
+  .list-card .actions { display: flex; gap: 8px; margin-top: auto; flex-wrap: wrap; }
+  .list-card .actions .btn { flex: 1 1 auto; }
+
+  /* ---------- new list ---------- */
+  .tabs { display: flex; gap: 8px; margin-bottom: 18px; }
+  .tab {
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--ink-secondary);
+    padding: 9px 16px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-family: "Fredoka", sans-serif;
+    font-size: 14px;
+  }
+  .tab[aria-selected="true"] { background: var(--accent-wash); color: var(--accent-strong); border-color: var(--accent-wash); }
+
+  .field { margin-bottom: 16px; }
+  .field label { display: block; font-size: 13px; font-weight: 700; color: var(--ink-secondary); margin-bottom: 6px; }
+  .field input[type="text"], .field textarea {
+    width: 100%;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 11px 13px;
+    font-size: 16px;
+  }
+  .field select {
+    width: 100%; border: 1.5px solid var(--border); border-radius: 10px;
+    padding: 11px 13px; font-size: 16px; background: var(--surface); color: var(--ink); font-family: inherit;
+  }
+  .size-row { display:flex; align-items:center; gap:8px; margin:10px 0 2px; font-size:13px; color: var(--ink-secondary); flex-wrap: wrap; }
+  .size-row select { border:1.5px solid var(--border); border-radius:8px; padding:5px 8px; font-size:14px; background: var(--surface); color: var(--ink); font-family: inherit; }
+  .mastery-track { height:6px; border-radius:99px; background: var(--surface-2); overflow:hidden; margin-top:8px; }
+  .mastery-fill { height:100%; background: var(--good); }
+  .field textarea { min-height: 130px; resize: vertical; font-family: inherit; }
+  .hint { font-size: 12.5px; color: var(--ink-muted); margin-top: 6px; }
+
+  .dropzone {
+    border: 1.5px dashed var(--border);
+    border-radius: 14px;
+    padding: 28px 18px;
+    text-align: center;
+    color: var(--ink-secondary);
+    background: var(--surface-2);
+  }
+  .dropzone .glyph { font-size: 30px; margin-bottom: 8px; display: block; }
+  .photo-preview { max-width: 100%; max-height: 220px; border-radius: 10px; margin: 12px auto 0; display: block; border: 1px solid var(--border); }
+
+  .word-table { width: 100%; border-collapse: collapse; margin-top: 4px; }
+  .word-table th {
+    text-align: left;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--ink-muted);
+    font-weight: 700;
+    padding: 0 8px 8px;
+  }
+  .word-table td { padding: 5px 8px; vertical-align: middle; }
+  .word-table input[type="text"] {
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-size: 16px;
+    width: 100%;
+    min-width: 110px;
+  }
+  .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .word-table .num-col { width: 26px; color: var(--ink-muted); font-size: 13px; text-align: right; padding-right: 10px; }
+  .word-table .del-col { width: 36px; }
+  .row-del {
+    width: 30px; height: 30px; border-radius: 8px; border: none;
+    background: transparent; color: var(--ink-muted); font-size: 15px;
+  }
+  .row-del:hover { background: var(--bad-wash); color: var(--bad); }
+
+  .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+
+  /* ---------- practice ---------- */
+  .practice-card { padding: 36px 28px; text-align: center; max-width: 520px; margin: 0 auto; }
+  .progress-track { height: 6px; background: var(--surface-2); border-radius: 999px; overflow: hidden; margin-bottom: 26px; }
+  .progress-fill { height: 100%; background: var(--accent); border-radius: 999px; transition: width 0.25s ease; }
+  .progress-label { font-size: 13px; color: var(--ink-muted); margin-bottom: 20px; font-family: "JetBrains Mono", monospace; }
+
+  .speak-btn {
+    width: 92px; height: 92px;
+    border-radius: 999px;
+    border: none;
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-size: 34px;
+    box-shadow: var(--shadow);
+    margin-bottom: 14px;
+    transition: transform 0.12s ease;
+  }
+  .speak-btn:hover { transform: scale(1.04); }
+  .speak-btn:active { transform: scale(0.97); }
+  .speak-sub { display: block; font-size: 13px; color: var(--ink-muted); margin-bottom: 22px; }
+  .sentence-btn { font-size: 13px; }
+
+  .answer-input {
+    width: 100%;
+    font-size: 22px;
+    text-align: center;
+    padding: 14px;
+    border: none;
+    border-bottom: 3px solid var(--border);
+    background: transparent;
+    font-family: "JetBrains Mono", monospace;
+    letter-spacing: 0.02em;
+    color: var(--ink);
+  }
+  .answer-input:focus { border-bottom-color: var(--accent); outline: none; }
+
+  /* ---------- results ---------- */
+  .score-tile {
+    text-align: center;
+    padding: 30px 20px 26px;
+    margin-bottom: 22px;
+  }
+  .score-tile .big { font-size: 48px; font-weight: 700; font-family: "JetBrains Mono", monospace; }
+  .score-tile .pct { font-size: 15px; color: var(--ink-secondary); margin-top: 4px; }
+
+  .review-row {
+    display: grid;
+    grid-template-columns: 22px 1fr 1fr;
+    gap: 10px;
+    align-items: center;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+  }
+  .review-row:last-child { border-bottom: none; }
+  .review-row .badge { font-size: 15px; }
+  .review-row .lbl { font-size: 11px; text-transform: uppercase; color: var(--ink-muted); letter-spacing: 0.03em; display: block; margin-bottom: 2px; }
+  .review-row .typed { color: var(--bad); font-family: "JetBrains Mono", monospace; }
+  .review-row .correct { color: var(--good); font-family: "JetBrains Mono", monospace; font-weight: 700; }
+
+  /* ---------- history ---------- */
+  .history-list-picker { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+  .session-table { width: 100%; border-collapse: collapse; }
+  .session-table th { text-align: left; font-size: 12px; text-transform: uppercase; color: var(--ink-muted); padding: 8px 12px; border-bottom: 1px solid var(--border); }
+  .session-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); font-size: 14px; }
+  .session-table td.mono { font-family: "JetBrains Mono", monospace; }
+
+  .chart-wrap { padding: 18px 18px 8px; margin-bottom: 20px; }
+  .chart-wrap h3 { font-size: 14px; color: var(--ink-secondary); margin-bottom: 8px; }
+
+  .toast {
+    position: fixed;
+    bottom: 22px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--ink);
+    color: var(--bg);
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: var(--shadow);
+    z-index: 50;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(-4px); }
+
+  .banner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--warn-wash);
+    color: var(--warn);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 13.5px;
+    margin-bottom: 16px;
+  }
+
+  @media (max-width: 520px) {
+    .stat-row { grid-template-columns: 1fr 1fr; }
+    .stat-row .stat-tile:last-child { grid-column: 1 / -1; }
+    .topbar { flex-direction: column; align-items: flex-start; }
+    .review-row { grid-template-columns: 18px 1fr; }
+    .review-row .correct-cell { grid-column: 2; }
+  }
+</style>
+
+<div class="app">
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-mark">🐝</div>
+      <h1>Say &amp; Spell</h1>
+    </div>
+    <nav class="nav" id="mainNav">
+      <button data-screen="home" aria-current="true">Word Lists</button>
+      <button data-screen="history">History</button>
+      <button data-screen="voice">🔊 Voice</button>
+    </nav>
+  </div>
+
+  <!-- HOME -->
+  <section class="screen active" id="screen-home">
+    <div class="stat-row">
+      <div class="card stat-tile"><div class="num mono" id="statLists">0</div><div class="label">Word lists</div></div>
+      <div class="card stat-tile"><div class="num mono" id="statSessions">0</div><div class="label">Practice runs</div></div>
+      <div class="card stat-tile"><div class="num mono" id="statAccuracy">—</div><div class="label">Overall accuracy</div></div>
+    </div>
+
+    <div class="btn-row" style="margin-bottom:0;">
+      <button class="btn btn-primary" id="btnNewList" style="flex:2; font-size:16px; padding:14px;">+ New spelling list</button>
+      <button class="btn btn-ghost" id="btnImportCode" style="flex:1; font-size:15px; padding:14px;">📥 Import a list</button>
+    </div>
+
+    <div class="section-head"><h2>Your lists</h2></div>
+    <div id="listGrid" class="list-grid"></div>
+    <div id="listEmpty" class="empty" hidden>
+      <div class="glyph">📝</div>
+      No lists yet — add your first spelling list to get started.
+    </div>
+  </section>
+
+  <!-- NEW LIST -->
+  <section class="screen" id="screen-newlist">
+    <div class="section-head" style="margin-top:0;"><h2 style="color:var(--ink); font-family:'Fredoka',sans-serif; font-size:20px;">New spelling list</h2>
+      <button class="btn btn-ghost btn-sm" data-nav="home">← Back</button>
+    </div>
+
+    <div class="field">
+      <label for="listNameInput">List name</label>
+      <input type="text" id="listNameInput" placeholder="e.g. Week 4 — silent letters">
+    </div>
+
+    <div class="tabs" role="tablist">
+      <button class="tab" id="tabType" aria-selected="true">✏️ Type words</button>
+      <button class="tab" id="tabPhoto" aria-selected="false">📷 Upload a photo</button>
+    </div>
+
+    <div id="paneType">
+      <div class="field">
+        <label for="wordsTextarea">Spelling words</label>
+        <textarea id="wordsTextarea" placeholder="Type one word per line, or separate with commas — e.g.&#10;giraffe&#10;knowledge&#10;beautiful"></textarea>
+        <div class="hint">One word per line or comma-separated.</div>
+      </div>
+      <button class="btn btn-primary" id="btnBuildFromText">Continue →</button>
+    </div>
+
+    <div id="panePhoto" hidden>
+      <div class="dropzone" id="dropzone">
+        <span class="glyph">📷</span>
+        <div id="dropzoneLabel">Take or choose a photo of your spelling list</div>
+        <input type="file" id="photoInput" accept="image/*" capture="environment" style="margin-top:12px;">
+        <img id="photoPreview" class="photo-preview" hidden>
+      </div>
+      <div class="banner" id="photoUnavailableBanner" hidden>
+        ⚠️ Photo scanning isn't available in this view — try typing the words instead.
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="btnAnalyzePhoto" disabled>✨ Read words from photo</button>
+      </div>
+    </div>
+
+    <div id="reviewSection" hidden>
+      <div class="section-head"><h2>Check the words</h2>
+        <button class="btn btn-ghost btn-sm" id="btnSuggestSentences">✨ Suggest sentences</button>
+      </div>
+      <div class="table-scroll">
+      <table class="word-table">
+        <thead><tr><th></th><th>Word</th><th>Example sentence (optional)</th><th></th></tr></thead>
+        <tbody id="reviewTbody"></tbody>
+      </table>
+      </div>
+      <button class="btn btn-ghost btn-sm" id="btnAddRow" style="margin-top:10px;">+ Add word</button>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="btnSaveList">Save list</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRACTICE -->
+  <section class="screen" id="screen-practice">
+    <div class="card practice-card">
+      <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+      <div class="progress-label" id="progressLabel">WORD 1 OF 1</div>
+
+      <button class="speak-btn" id="btnSpeak" aria-label="Hear the word">🔊</button>
+      <span class="speak-sub" id="replayHint">Tap to hear the word again</span>
+      <button class="btn btn-ghost btn-sm sentence-btn" id="btnSentence" style="margin-bottom:22px;" hidden>🗣️ Hear it in a sentence</button>
+
+      <input type="text" class="answer-input" id="answerInput" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="done" placeholder="Type what you hear">
+      <div class="btn-row" style="justify-content:center; margin-top:24px;">
+        <button class="btn btn-primary" id="btnSubmitWord" style="min-width:160px;">Next →</button>
+      </div>
+      <button class="btn btn-ghost btn-sm" id="btnQuitPractice" style="margin-top:18px;">End early</button>
+    </div>
+  </section>
+
+  <!-- RESULTS -->
+  <section class="screen" id="screen-results">
+    <div class="card score-tile">
+      <div class="big mono" id="resultScore">0 / 0</div>
+      <div class="pct" id="resultPct">0% correct</div>
+    </div>
+    <div id="resultReviewWrap">
+      <div class="section-head" style="margin-top:0;"><h2>Words to review</h2></div>
+      <div class="card" id="reviewList"></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" id="btnRetryAll">Practice full list again</button>
+      <button class="btn btn-ghost" id="btnRetryMissed" hidden>Practice missed words</button>
+      <button class="btn btn-ghost" data-nav="home">Back to lists</button>
+    </div>
+  </section>
+
+  <!-- VOICE -->
+  <section class="screen" id="screen-voice">
+    <div class="section-head" style="margin-top:0;"><h2 style="color:var(--ink); font-family:'Fredoka',sans-serif; font-size:20px;">Reading voice</h2></div>
+    <div class="card" style="padding:18px;">
+      <div class="field">
+        <label for="voiceSelect">Voice</label>
+        <select id="voiceSelect"></select>
+        <div class="hint" id="voiceHint">The most natural-sounding voice on this device is picked automatically. ★ marks the higher-quality ones.</div>
+      </div>
+      <div class="field">
+        <label for="rateSelect">Speed</label>
+        <select id="rateSelect">
+          <option value="0.75">Slow</option>
+          <option value="0.85">A little slow</option>
+          <option value="0.95">Normal</option>
+        </select>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="btnTestVoice">▶ Test voice</button>
+      </div>
+      <div class="banner" style="margin-top:16px;">
+        <strong>Want a much more natural voice?</strong> On iPad or iPhone, open <em>Settings › Accessibility › Spoken Content › Voices › English</em> and download a voice marked <em>Premium</em> or <em>Enhanced</em> (Ava, Zoe or Evan sound great). Then come back here and pick it. On a Mac it's <em>System Settings › Accessibility › Spoken Content › System voice › Manage Voices</em>. In Edge, the “Natural” voices are already the best choice.
+      </div>
+    </div>
+  </section>
+
+  <!-- HISTORY -->
+  <section class="screen" id="screen-history">
+    <div class="section-head" style="margin-top:0;"><h2 style="color:var(--ink); font-family:'Fredoka',sans-serif; font-size:20px;">Practice history</h2></div>
+    <div class="history-list-picker" id="historyPicker"></div>
+    <div id="historyEmpty" class="empty">
+      <div class="glyph">📊</div>
+      Practice a list to start tracking scores here.
+    </div>
+    <div id="historyContent" hidden>
+      <div class="card chart-wrap">
+        <h3>Score over time</h3>
+        <div id="trendChart"></div>
+      </div>
+      <div class="card table-scroll">
+        <table class="session-table">
+          <thead><tr><th>Date</th><th>Score</th><th>Missed words</th></tr></thead>
+          <tbody id="sessionTbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ================= capabilities ================= */
+  let db = null, sample = null, sampleLimits = null;
+
+  async function initCapabilities() {
+    try { db = (window.claude && await window.claude.use("db")) || null; } catch (e) { db = null; }
+    try { sample = (window.claude && await window.claude.use("sample")) || null; } catch (e) { sample = null; }
+    if (sample) {
+      try { sampleLimits = await sample.limits(); } catch (e) { sampleLimits = null; }
+    }
+    applyCapabilityUI();
+  }
+
+  function applyCapabilityUI() {
+    const photoOk = !!(sample && sampleLimits && sampleLimits.images);
+    document.getElementById("tabPhoto").hidden = !photoOk;
+    document.getElementById("btnSuggestSentences").hidden = !sample;
+    if (photoOk) {
+      document.getElementById("photoInput").accept = sampleLimits.images.mediaTypes.join(",");
+    }
+  }
+
+  /* ================= tiny local store fallback ================= */
+  const LS_LISTS = "sns_wordlists_v1";
+  const LS_SESSIONS = "sns_sessions_v1";
+
+  function readLS(key) {
+    try { return JSON.parse(localStorage.getItem(key) || "[]"); } catch (e) { return []; }
+  }
+  function writeLS(key, val) {
+    try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) { /* ignore */ }
+  }
+  function uid() {
+    return (crypto.randomUUID ? crypto.randomUUID() : "id-" + Date.now() + "-" + Math.random().toString(16).slice(2));
+  }
+
+  const Store = {
+    async listLists() {
+      return [MASTER_LIST].concat(await this._userLists());
+    },
+    async _userLists() {
+      if (db) {
+        try {
+          const snap = await db.collection("wordlists").orderBy("createdAt", "desc").get();
+          return snap.docs.map(d => Object.assign({ id: d.id }, d.data()));
+        } catch (e) { /* fall through to local */ }
+      }
+      return readLS(LS_LISTS).slice().sort((a, b) => (b.createdAt || "").localeCompare(a.createdAt || ""));
+    },
+    async saveList(list) {
+      const id = list.id || uid();
+      const rec = Object.assign({}, list, { id, createdAt: list.createdAt || new Date().toISOString() });
+      if (db) {
+        try { await db.collection("wordlists").doc(id).set(rec); return id; } catch (e) { /* fall through */ }
+      }
+      const all = readLS(LS_LISTS);
+      const idx = all.findIndex(l => l.id === id);
+      if (idx >= 0) all[idx] = rec; else all.push(rec);
+      writeLS(LS_LISTS, all);
+      return id;
+    },
+    async deleteList(id) {
+      if (db) {
+        try { await db.collection("wordlists").doc(id).delete(); } catch (e) { /* ignore */ }
+      }
+      writeLS(LS_LISTS, readLS(LS_LISTS).filter(l => l.id !== id));
+    },
+    async addSession(session) {
+      const rec = Object.assign({}, session, { id: uid() });
+      if (db) {
+        try { await db.collection("sessions").add(rec); return; } catch (e) { /* fall through */ }
+      }
+      const all = readLS(LS_SESSIONS);
+      all.push(rec);
+      writeLS(LS_SESSIONS, all);
+    },
+    async listSessions(listId) {
+      if (db) {
+        try {
+          const snap = await db.collection("sessions").where("listId", "==", listId).get();
+          return snap.docs.map(d => Object.assign({ id: d.id }, d.data())).sort((a, b) => (a.date || "").localeCompare(b.date || ""));
+        } catch (e) { /* fall through */ }
+      }
+      return readLS(LS_SESSIONS).filter(s => s.listId === listId).sort((a, b) => (a.date || "").localeCompare(b.date || ""));
+    },
+    async allSessions() {
+      if (db) {
+        try {
+          const snap = await db.collection("sessions").get();
+          return snap.docs.map(d => d.data());
+        } catch (e) { /* fall through */ }
+      }
+      return readLS(LS_SESSIONS);
+    }
+  };
+
+  /* ================= toast ================= */
+  let toastTimer = null;
+  function toast(msg) {
+    const el = document.getElementById("toast");
+    el.textContent = msg;
+    el.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove("show"), 2400);
+  }
+
+  /* ================= nav / screens ================= */
+  function showScreen(name) {
+    document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+    const el = document.getElementById("screen-" + name);
+    if (el) el.classList.add("active");
+    document.querySelectorAll("#mainNav button").forEach(b => {
+      b.setAttribute("aria-current", b.dataset.screen === name ? "true" : "false");
+    });
+    if (name === "home") renderHome();
+    if (name === "history") renderHistoryPicker();
+  }
+
+  document.getElementById("mainNav").addEventListener("click", e => {
+    const btn = e.target.closest("button[data-screen]");
+    if (btn) showScreen(btn.dataset.screen);
+  });
+  document.querySelectorAll("[data-nav]").forEach(btn => {
+    btn.addEventListener("click", () => showScreen(btn.dataset.nav));
+  });
+
+  /* ================= built-in master list ================= */
+  const MASTER_ID = "builtin-grade5-master";
+  const MASTER_WORDS = ["ability", "aboard", "absence", "absolutely", "absurd", "abundance", "accent", "accept", "acceptance", "accident", "accidentally", "accommodation", "accompany", "accomplishment", "according", "accurate", "accused", "accustomed", "ache", "acknowledge", "acquaintance", "acre", "activity", "actually", "addition", "address", "adjustment", "admission", "adolescent", "adoption", "advanced", "advantage", "adventure", "advertisement", "affect", "affectionate", "afterwards", "agreeable", "agricultural", "alcohol", "alligator", "allowance", "alphabet", "already", "although", "amazement", "ambulance", "ammunition", "amusement", "anchor", "ancient", "anniversary", "announcement", "annual", "answer", "anxiety", "anxious", "apartment", "apologize", "appearance", "appetite", "application", "appointment", "appreciate", "appropriate", "approval", "approximately", "aquarium", "arduous", "argue", "arrangement", "artificial", "ascended", "assignment", "assistance", "assortment", "astonished", "astronaut", "athletes", "atmosphere", "attendance", "attitude", "attractive", "audience", "auditorium", "authority", "autumn", "available", "awakening", "awful", "bacteria", "baggage", "balloon", "banana", "banquet", "barefooted", "basement", "beautiful", "beggar", "beginning", "behavior", "believe", "bicycle", "bigot", "birthday", "biscuits", "blizzard", "blouse", "bomb", "boundary", "bouquet", "bracelet", "breakfast", "breath", "breathe", "brilliant", "broadcast", "buffalo", "buffoonery", "building", "bulletin", "bureau", "burglar", "burial", "cabbage", "cabinet", "cactus", "cafeteria", "calendar", "campaign", "canary", "candidate", "capable", "career", "carnival", "carpenter", "carriage", "cartoon", "catalogue", "caterpillar", "caution", "ceiling", "celebration", "celery", "cemetery", "century", "certainly", "certificate", "champion", "chemistry", "chocolate", "choir", "chorus", "circulation", "circumstances", "circumstantial", "circus", "citizen", "civilization", "cleanliness", "climate", "coarse", "cocoa", "coconut", "coffee", "combination", "comfortable", "commander", "commercial", "committee", "communicate", "community", "comparison", "competition", "complaint", "completely", "compliment", "concrete", "congratulate", "conquer", "conscience", "consequences", "consideration", "contented", "continually", "convenience", "convention", "conversation", "cooperation", "corruptible", "costume", "courteous", "crayons", "criminal", "criticism", "cucumber", "curiosity", "custodian", "customer", "cylinder", "cynicism", "dandelion", "dangerous", "daughter", "deceived", "decision", "decorate", "decoration", "definite", "definition", "delicious", "delightful", "delivery", "deodorant", "descending", "descent", "description", "descriptive", "desirable", "desperate", "destination", "detective", "deterrence", "diaspora", "dictionary", "difference", "diploma", "disagreeable", "disappear", "disappointment", "discount", "discovered", "dissatisfied", "distinguish", "document", "domestic", "doubtful", "dramatic", "drowned", "dungarees", "earnest", "eclipse", "economical", "education", "effective", "efficient", "eighteen", "elaborate", "electric", "electrically", "elephant", "elevator", "embarrass", "embroidery", "emergency", "employees", "employment", "endurance", "energetic", "engine", "engineer", "enormous", "entertainment", "enthusiastic", "entrance", "envelope", "equipment", "escalate", "especially", "essential", "establish", "examination", "exceedingly", "excellent", "exception", "excitement", "exercise", "exhausted", "expensive", "experience", "explanation", "explosion", "extraordinary", "extremely", "factory", "failure", "familiar", "family", "famous", "fancy", "farming", "fascinated", "fashion", "favorite", "feather", "feature", "february", "federal", "festival", "fiction", "fierce", "figures", "filthily", "finally", "finish", "fixed", "flashlight", "flavor", "float", "fluid", "following", "foolish", "foreign", "forgotten", "formerly", "fortunate", "forward", "fought", "freeze", "freight", "frequent", "friendly", "frighten", "frontier", "fudge", "funeral", "furnace", "furniture", "gallon", "garage", "garbage", "garment", "gasoline", "gathering", "generally", "generation", "generous", "genius", "geography", "ghost", "giant", "giraffe", "glasses", "glorious", "golden", "gorgeous", "gossip", "government", "governor", "graceful", "gradually", "graduation", "grammar", "granite", "grapefruit", "grasshopper", "gratitude", "greatest", "greedy", "groceries", "ground", "guardian", "guessed", "guilty", "guitar", "gymnasium", "hammer", "handkerchief", "handsome", "happiest", "happiness", "hardware", "hatch", "hatchet", "haunted", "headache", "headquarters", "healthful", "healthy", "height", "heroes", "hesitate", "highest", "hippopotamus", "hoping", "hopping", "horrid", "horror", "hospital", "houses", "human", "humorous", "iceberg", "ignorant", "illustrate", "imagination", "imitation", "immediate", "immigrants", "impatient", "important", "impossible", "impression", "improvement", "incident", "including", "inconvenient", "incorrect", "increase", "independence", "independent", "industrial", "industries", "influence", "information", "initial", "injury", "innocent", "inquire", "inspection", "instantly", "institution", "instruction", "instrument", "insulated", "insurance", "intelligence", "intelligent", "interested", "interfere", "interior", "international", "interrupt", "interview", "introduction", "invalid", "invention", "investigation", "invitation", "irrigation", "island", "issue", "jacket", "jealous", "jeopardy", "jewelry", "journey", "jubilant", "juice", "kettle", "kindergarten", "kindly", "kingdom", "kitchen", "knead", "knight", "knitting", "knives", "knowledge", "laboratory", "laborious", "ladder", "language", "languish", "lantern", "laughed", "laundry", "lawyer", "league", "learned", "legislature", "lettuce", "librarian", "library", "license", "lieutenant", "lightning", "liquid", "literature", "location", "lodge", "losing", "lumber", "luncheon", "macaroni", "machine", "machinery", "magazine", "magnificent", "maintain", "majority", "management", "manager", "manicure", "mansion", "manufacture", "manufacturing", "marble", "marriage", "married", "marshmallows", "martyr", "marvelous", "material", "mathematics", "mattress", "meadow", "measles", "measure", "mechanical", "medicine", "medium", "membership", "memory", "mentioned", "merchant", "merely", "message", "messenger", "method", "microscope", "middle", "midnight", "mighty", "military", "million", "mineral", "minister", "minute", "minutes", "mischief", "mischievous", "miserable", "missile", "missionary", "mistake", "mittens", "mixture", "moccasins", "moderate", "moisture", "monotonous", "monument", "mortgage", "mosquito", "motorcycle", "mountain", "movement", "multiplication", "municipal", "museum", "mushrooms", "musician", "mustard", "mysterious", "napkin", "narrow", "national", "naturally", "naughty", "navigation", "necessarily", "necessary", "necessity", "neglected", "neighbor", "neither", "nephew", "nervous", "nonsense", "noticed", "nourishing", "nuisance", "numerous", "nursery", "obedience", "objection", "obliged", "observation", "observe", "obtained", "occasionally", "occupation", "occurrence", "offering", "officers", "omitted", "onions", "operation", "opinion", "opportunities", "opposition", "ordinarily", "organization", "organized", "originally", "oriole", "orphan", "oxygen", "oyster", "package", "pageant", "pajamas", "pamphlets", "papoose", "parachute", "paragraph", "parallel", "parliament", "particular", "particularly", "passage", "pasture", "patience", "peace", "peanuts", "peasants", "peculiar", "pencil", "peninsula", "penmanship", "perfectly", "performance", "perilous", "permission", "personality", "petroleum", "pheasants", "phonograph", "photograph", "physical", "pickle", "picnic", "picture", "piece", "pierce", "pigeon", "pillow", "pineapple", "pioneer", "pistol", "pitcher", "planned", "plantation", "plaster", "plateau", "playground", "pleasant", "please", "pleasure", "pledge", "plentiful", "pneumonia", "pocket", "poisonous", "political", "politics", "popular", "population", "porcupine", "position", "positive", "possess", "possession", "possibilities", "possible", "postage", "postpone", "posture", "poultry", "pounds", "powder", "practically", "practicing", "prairie", "praise", "preamble", "precious", "predicate", "preferred", "prejudice", "preparation", "presence", "preserve", "president", "pressure", "prettier", "previous", "primitive", "principal", "principle", "prisoner", "privilege", "probably", "procedure", "procession", "produce", "product", "production", "profession", "profitable", "prominent", "promotion", "promptly", "pronunciation", "propelled", "property", "proportion", "proposed", "proposition", "prosperous", "protection", "proteins", "provided", "provision", "publication", "pudding", "pumpkin", "puncture", "punishment", "puppies", "purchase", "purpose", "pursuit", "puzzle", "pyramids", "quality", "quantities", "quantity", "quarrel", "quarter", "question", "quickly", "quotation", "quote", "racial", "radiator", "ragged", "rapidly", "rattlesnake", "reader", "reality", "realize", "reasonable", "rebel", "receipt", "receive", "recently", "reception", "recess", "recipe", "recognize", "recommend", "recommendation", "recreation", "reference", "referred", "refreshments", "refrigeration", "refrigerator", "refugees", "refused", "refutation", "registration", "regretted", "relative", "religious", "remarkable", "remembrance", "reminder", "rendered", "representative", "requested", "require", "research", "reservation", "residence", "resolution", "resources", "respectfully", "responsibility", "responsible", "restaurant", "revenge", "revenue", "revolver", "rheumatism", "rooster", "sacrifice", "saddle", "safety", "salary", "sandwiches", "sanitary", "satellite", "satisfaction", "satisfied", "saucer", "sausage", "scaffold", "scarcely", "scarf", "scarlet", "scenery", "scheduled", "scheme", "scientist", "scissors", "scratch", "scribbling", "search", "secretary", "secured", "selection", "selfish", "semester", "separate", "separation", "september", "seriously", "serum", "servant", "several", "shelter", "shepherd", "sheriff", "shining", "shipments", "shopping", "shortage", "shoulder", "shrieking", "signature", "silverware", "sincere", "sincerely", "sincerity", "singular", "situation", "sixty", "skeleton", "skiing", "skillful", "sleigh", "slipper", "smooth", "sneeze", "social", "society", "somersaults", "source", "sparrow", "specialize", "specimen", "speedometer", "spices", "spinach", "splendid", "sprained", "spread", "sprinkle", "square", "squash", "squeak", "squeeze", "standard", "stationary", "stationery", "statue", "steady", "stenographer", "sticky", "stock", "stockings", "stomach", "storage", "straight", "straighten", "strawberries", "strength", "stretch", "struggle", "stubborn", "submarine", "subscribers", "subscription", "substance", "substitute", "subtraction", "succeed", "successful", "suddenly", "sufficient", "suggestion", "superintendent", "supermarket", "superstition", "supervisor", "supplied", "supposed", "surface", "surprise", "surrender", "surround", "surrounded", "swallow", "sweater", "swimming", "sympathize", "sympathy", "syntax", "taught", "teacher", "teaching", "teaspoon", "tedious", "telegram", "telegraph", "telephone", "telescope", "television", "temperature", "temporary", "terrible", "territory", "terrorism", "testimony", "textile", "thanksgiving", "thermometer", "thimble", "thorough", "though", "thought", "thoughtful", "thoughts", "thousand", "thread", "throat", "through", "throughout", "thumb", "thursday", "tickled", "tissues", "toaster", "tobacco", "toboggan", "tomato", "tomorrow", "tongue", "tonsillitis", "tough", "tourist", "tournament", "toward", "tractor", "tragedy", "transferred", "transportation", "traveling", "treasurer", "treatment", "tremble", "trimmed", "triumph", "tropical", "trouble", "trough", "trousers", "tuesday", "typewriter", "umbrella", "unable", "unanimous", "uncertain", "uncomfortable", "unconscious", "unconstitutional", "underneath", "understand", "understanding", "understood", "undoubtedly", "unexpected", "unfortunate", "uniform", "unimportant", "universal", "university", "unnecessary", "unpleasant", "unusual", "usually", "vacant", "vacation", "vaccinated", "vaccination", "valuable", "vanity", "varnish", "vegetable", "vegetation", "vehicle", "venison", "venture", "verdict", "vibration", "vicinity", "victory", "vigorous", "vinegar", "vintage", "visible", "vision", "visitors", "vitamins", "voluntary", "voyage", "vulgar", "washing", "watching", "watermelon", "wealthy", "weapons", "weather", "weaving", "wednesday", "weigh", "weight", "welfare", "whale", "whatever", "wheelbarrow", "which", "while", "whipping", "whiskers", "whisper", "whistle", "wholesale", "wicker", "wigwam", "wilderness", "willow", "winner", "winning", "witch", "witness", "wolves", "woman", "women", "wonderful", "wondering", "wooden", "woolen", "worked", "worried", "worse", "wouldn't", "wrapped", "writing", "written", "wrong", "years", "yeast", "yellow", "yesterday", "yield", "young", "younger", "yourself", "yourselves", "youth", "youthful"];
+
+  const MASTER_LIST = { id: MASTER_ID, name: "Grade 5 Master List", builtin: true, createdAt: "9999", words: MASTER_WORDS.map(w => ({ word: w, sentence: "" })) };
+  const LS_TESTSIZE = "sns_testsize_v1";
+  function getTestSize() { try { return parseInt(localStorage.getItem(LS_TESTSIZE) || "20", 10) || 20; } catch (e) { return 20; } }
+  function setTestSize(n) { try { localStorage.setItem(LS_TESTSIZE, String(n)); } catch (e) {} }
+
+  // Latest result per word across all master-list sessions: true = spelled right last time.
+  function masterStatus(sessions) {
+    const status = {};
+    sessions.filter(s => s.listId === MASTER_ID).sort((a, b) => (a.date || "").localeCompare(b.date || "")).forEach(s => {
+      (s.tested || []).forEach(w => { status[w] = true; });
+      (s.missed || []).forEach(m => { status[m.word] = false; });
+    });
+    return status;
+  }
+  // Build a test batch: up to a third are words she missed last time,
+  // the rest are words she hasn't been tested on yet, then anything else.
+  async function pickMasterBatch(n) {
+    const status = masterStatus(await Store.allSessions());
+    const missed = shuffle(MASTER_WORDS.filter(w => status[w] === false));
+    const unseen = shuffle(MASTER_WORDS.filter(w => !(w in status)));
+    const known = shuffle(MASTER_WORDS.filter(w => status[w] === true));
+    const batch = missed.slice(0, Math.ceil(n / 3));
+    for (const pool of [unseen, missed.slice(batch.length), known]) {
+      for (const w of pool) { if (batch.length >= n) break; batch.push(w); }
+    }
+    return batch.map(w => ({ word: w, sentence: "" }));
+  }
+
+  /* ================= voice choice ================= */
+  const LS_VOICE = "sns_voice_v1";
+  const LS_RATE = "sns_rate_v1";
+  const NOVELTY = /albert|bad news|bahh|bells|boing|bubbles|cellos|good news|jester|organ|superstar|trinoids|whisper|wobble|zarvox|fred|junior|ralph|kathy|grandma|grandpa|rocko|shelley|flo\b|eddy|reed|sandy|hysterical|deranged|pipe/i;
+  let voices = [];
+  function voiceScore(v) {
+    const n = v.name;
+    let s = 0;
+    if (/premium/i.test(n)) s += 100;
+    if (/enhanced/i.test(n)) s += 80;
+    if (/natural|neural/i.test(n)) s += 90;
+    if (/online/i.test(n)) s += 20;
+    if (/^google/i.test(n)) s += 50;
+    if (/\b(ava|zoe|evan|allison|samantha|nathan|joelle|noelle|susan|tom|aria|jenny|guy|michelle)\b/i.test(n)) s += 15;
+    if (/^en[-_]US/i.test(v.lang)) s += 10;
+    else if (/^en[-_](GB|AU|CA|IE)/i.test(v.lang)) s += 4;
+    if (v.localService === false && !/google|online|natural/i.test(n)) s -= 5;
+    return s;
+  }
+  function loadVoices() {
+    if (!("speechSynthesis" in window)) return;
+    voices = window.speechSynthesis.getVoices()
+      .filter(v => /^en/i.test(v.lang) && !NOVELTY.test(v.name))
+      .sort((a, b) => voiceScore(b) - voiceScore(a) || a.name.localeCompare(b.name));
+    renderVoicePicker();
+  }
+  function chosenVoice() {
+    if (!voices.length) return null;
+    let saved = null;
+    try { saved = localStorage.getItem(LS_VOICE); } catch (e) {}
+    return (saved && voices.find(v => v.voiceURI === saved)) || voices[0];
+  }
+  function chosenRate() {
+    try { return parseFloat(localStorage.getItem(LS_RATE) || "0.85") || 0.85; } catch (e) { return 0.85; }
+  }
+  function renderVoicePicker() {
+    const sel = document.getElementById("voiceSelect");
+    if (!sel) return;
+    const cur = chosenVoice();
+    sel.innerHTML = "";
+    if (!voices.length) {
+      const o = document.createElement("option"); o.textContent = "Default voice"; sel.appendChild(o); return;
+    }
+    voices.forEach(v => {
+      const o = document.createElement("option");
+      o.value = v.voiceURI;
+      o.textContent = (voiceScore(v) >= 50 ? "★ " : "") + v.name + " (" + v.lang + ")";
+      if (cur && v.voiceURI === cur.voiceURI) o.selected = true;
+      sel.appendChild(o);
+    });
+    document.getElementById("rateSelect").value = String(chosenRate());
+  }
+  if ("speechSynthesis" in window) {
+    loadVoices();
+    window.speechSynthesis.addEventListener && window.speechSynthesis.addEventListener("voiceschanged", loadVoices);
+  }
+  document.getElementById("voiceSelect").addEventListener("change", e => {
+    try { localStorage.setItem(LS_VOICE, e.target.value); } catch (err) {}
+    speak("Accommodation");
+  });
+  document.getElementById("rateSelect").addEventListener("change", e => {
+    try { localStorage.setItem(LS_RATE, e.target.value); } catch (err) {}
+  });
+  document.getElementById("btnTestVoice").addEventListener("click", () => {
+    speak("Your word is: accommodation. The hotel had comfortable accommodation.", { rate: chosenRate() });
+  });
+
+  /* ================= speech ================= */
+  // iPadOS/iOS Safari only allows speechSynthesis to start when the call
+  // happens synchronously inside a user tap — no setTimeout/await in between —
+  // so every call site below speaks immediately inside its click handler.
+  function speak(text, opts) {
+    if (!("speechSynthesis" in window)) { toast("This browser can't read words aloud."); return; }
+    const synth = window.speechSynthesis;
+    if (synth.speaking || synth.pending) synth.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.rate = (opts && opts.rate) || chosenRate();
+    u.pitch = 1;
+    const v = chosenVoice();
+    if (v) { u.voice = v; u.lang = v.lang; } else { u.lang = "en-US"; }
+    synth.speak(u);
+  }
+  // Safari on iPad sometimes needs its voice list "warmed up" by an empty
+  // utterance tied to the very first tap before real speech will play.
+  let speechPrimed = false;
+  function primeSpeechOnce() {
+    if (speechPrimed || !("speechSynthesis" in window)) return;
+    speechPrimed = true;
+    try {
+      const u = new SpeechSynthesisUtterance("");
+      u.volume = 0;
+      window.speechSynthesis.speak(u);
+    } catch (e) { /* ignore */ }
+    document.removeEventListener("pointerdown", primeSpeechOnce);
+  }
+  document.addEventListener("pointerdown", primeSpeechOnce, { once: true });
+
+  /* ================= HOME ================= */
+  async function renderHome() {
+    const [lists, sessions] = await Promise.all([Store.listLists(), Store.allSessions()]);
+    document.getElementById("statLists").textContent = lists.length;
+    document.getElementById("listEmpty").hidden = true;
+    document.getElementById("statSessions").textContent = sessions.length;
+    let totalCorrect = 0, totalWords = 0;
+    sessions.forEach(s => { totalCorrect += (s.correct || 0); totalWords += (s.total || 0); });
+    document.getElementById("statAccuracy").textContent = totalWords ? Math.round((totalCorrect / totalWords) * 100) + "%" : "—";
+
+    const grid = document.getElementById("listGrid");
+    grid.innerHTML = "";
+    document.getElementById("listEmpty").hidden = lists.length > 0;
+
+    const lastByList = {};
+    sessions.forEach(s => {
+      if (!lastByList[s.listId] || s.date > lastByList[s.listId].date) lastByList[s.listId] = s;
+    });
+
+    lists.forEach(list => {
+      const wordCount = (list.words || []).length;
+      const last = lastByList[list.id];
+      const card = document.createElement("div");
+      card.className = "card list-card";
+      const pctText = last ? Math.round((last.correct / last.total) * 100) + "% last time" : "Not practiced yet";
+      const pillClass = last ? (last.correct / last.total >= 0.8 ? "pill-good" : (last.correct / last.total >= 0.5 ? "pill-neutral" : "pill-bad")) : "pill-neutral";
+      card.innerHTML =
+        '<h3>' + escapeHtml(list.name) + '</h3>' +
+        '<div class="meta">' + wordCount + ' word' + (wordCount === 1 ? "" : "s") + '</div>' +
+        '<span class="pill ' + pillClass + '">' + pctText + '</span>' +
+        '<div class="actions">' +
+          '<button class="btn btn-primary btn-sm" data-act="practice">▶ Practice</button>' +
+          '<button class="btn btn-ghost btn-sm" data-act="share">🔗 Share</button>' +
+          '<button class="btn btn-ghost btn-sm" data-act="delete">Delete</button>' +
+        '</div>';
+      if (list.builtin) {
+        const status = masterStatus(sessions);
+        const mastered = MASTER_WORDS.filter(w => status[w] === true).length;
+        const toReview = MASTER_WORDS.filter(w => status[w] === false).length;
+        card.querySelector(".meta").textContent = wordCount.toLocaleString() + " words · " + mastered + " spelled right · " + toReview + " to review";
+        card.querySelector('[data-act="delete"]').remove();
+        card.querySelector('[data-act="share"]').remove();
+        const size = document.createElement("div");
+        size.className = "size-row";
+        size.innerHTML = '<label>Words per test</label><select>' + [10, 15, 20, 30, 50].map(n => '<option value="' + n + '"' + (n === getTestSize() ? " selected" : "") + '>' + n + '</option>').join("") + '</select>' +
+          '<div class="mastery-track" style="flex-basis:100%;"><div class="mastery-fill" style="width:' + (mastered / wordCount * 100).toFixed(1) + '%"></div></div>';
+        size.querySelector("select").addEventListener("change", e => setTestSize(parseInt(e.target.value, 10)));
+        card.insertBefore(size, card.querySelector(".actions"));
+      }
+      card.querySelector('[data-act="practice"]').addEventListener("click", () => startPractice(list));
+      const delBtn = card.querySelector('[data-act="delete"]');
+      if (delBtn) {
+      let confirming = false;
+      delBtn.addEventListener("click", async () => {
+        if (!confirming) {
+          confirming = true;
+          delBtn.textContent = "Confirm delete?";
+          delBtn.classList.add("btn-danger");
+          setTimeout(() => { confirming = false; delBtn.textContent = "Delete"; delBtn.classList.remove("btn-danger"); }, 3000);
+          return;
+        }
+        await Store.deleteList(list.id);
+        toast("List deleted");
+        renderHome();
+      });
+      }
+      if (!list.builtin) card.querySelector('[data-act="share"]').addEventListener("click", () => shareList(list));
+      grid.appendChild(card);
+    });
+  }
+
+  function escapeHtml(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  }
+
+  document.getElementById("btnNewList").addEventListener("click", () => {
+    resetNewListForm();
+    showScreen("newlist");
+  });
+  document.getElementById("btnImportCode").addEventListener("click", () => {
+    const code = window.prompt("Paste the list code someone sent you:");
+    if (code) importFromCode(code);
+  });
+
+  /* ================= share / import a list by link ================= */
+  // Lets a list travel to a device that has no Claude account at all: the
+  // words + sentences are packed into the URL itself, so opening the link
+  // needs nothing but a browser. Photo-scanning still needs Claude, so the
+  // idea is: scan the photo once wherever Claude is available, then share
+  // the resulting list to any other device this way.
+  function encodeListForShare(list) {
+    const payload = { n: list.name, w: (list.words || []).map(w => [w.word, w.sentence || ""]) };
+    return btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
+  }
+  function decodeListFromShare(b64) {
+    const payload = JSON.parse(decodeURIComponent(escape(atob(b64))));
+    return {
+      name: String(payload.n || "Shared list"),
+      words: (payload.w || []).map(pair => ({ word: String(pair[0] || ""), sentence: String(pair[1] || "") })).filter(w => w.word)
+    };
+  }
+  // A plain text code (not a link) so a list can travel between two totally
+  // separate copies of this app — e.g. this hosted copy and a standalone
+  // HTML file on someone else's device — with no shared origin required.
+  async function shareList(list) {
+    const code = "SNS1:" + encodeListForShare(list);
+    try {
+      await navigator.clipboard.writeText(code);
+      toast("List code copied — paste it into Messages/Mail, then have her tap “Import a list” on her copy");
+    } catch (e) {
+      window.prompt("Copy this code and send it to her:", code);
+    }
+  }
+  function importFromCode(raw) {
+    const code = (raw || "").trim();
+    if (!code) return;
+    const payload = code.startsWith("SNS1:") ? code.slice(5) : code;
+    try {
+      const decoded = decodeListFromShare(payload);
+      if (!decoded.words.length) { toast("That code didn't have any words in it"); return; }
+      resetNewListForm();
+      document.getElementById("listNameInput").value = decoded.name;
+      reviewWords = decoded.words;
+      renderReviewTable();
+      showScreen("newlist");
+      toast("Imported “" + decoded.name + "” — check it over and tap Save list");
+    } catch (e) {
+      toast("That code looks broken — ask for a new one");
+    }
+  }
+  function checkForImportLink() {
+    // Kept for the case where both people happen to use the exact same
+    // hosted URL — harmless no-op otherwise.
+    const hash = location.hash;
+    if (!hash.startsWith("#import=")) return;
+    history.replaceState(null, "", location.pathname);
+    importFromCode(hash.slice("#import=".length));
+  }
+
+  /* ================= NEW LIST ================= */
+  let reviewWords = []; // [{word, sentence}]
+  let photoFile = null;
+
+  function resetNewListForm() {
+    document.getElementById("listNameInput").value = "";
+    document.getElementById("wordsTextarea").value = "";
+    document.getElementById("reviewSection").hidden = true;
+    document.getElementById("photoPreview").hidden = true;
+    document.getElementById("photoInput").value = "";
+    document.getElementById("btnAnalyzePhoto").disabled = true;
+    photoFile = null;
+    reviewWords = [];
+    selectTab("type");
+  }
+
+  function selectTab(which) {
+    const isType = which === "type";
+    document.getElementById("tabType").setAttribute("aria-selected", isType);
+    document.getElementById("tabPhoto").setAttribute("aria-selected", !isType);
+    document.getElementById("paneType").hidden = !isType;
+    document.getElementById("panePhoto").hidden = isType;
+  }
+  document.getElementById("tabType").addEventListener("click", () => selectTab("type"));
+  document.getElementById("tabPhoto").addEventListener("click", () => selectTab("photo"));
+
+  document.getElementById("btnBuildFromText").addEventListener("click", () => {
+    const raw = document.getElementById("wordsTextarea").value;
+    const words = raw.split(/[\n,]/).map(w => w.trim()).filter(Boolean);
+    if (!words.length) { toast("Type at least one word first"); return; }
+    reviewWords = words.map(w => ({ word: w, sentence: "" }));
+    renderReviewTable();
+  });
+
+  document.getElementById("photoInput").addEventListener("change", e => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    photoFile = file;
+    const preview = document.getElementById("photoPreview");
+    preview.src = URL.createObjectURL(file);
+    preview.hidden = false;
+    document.getElementById("btnAnalyzePhoto").disabled = false;
+  });
+
+  document.getElementById("btnAnalyzePhoto").addEventListener("click", async () => {
+    if (!sample || !photoFile) return;
+    const btn = document.getElementById("btnAnalyzePhoto");
+    btn.disabled = true;
+    btn.textContent = "Reading photo…";
+    try {
+      const prompt = 'This image shows a list of spelling words — it might be handwritten, printed on a worksheet, or on a whiteboard. ' +
+        'Read every distinct spelling word you can find, in the order they appear on the page. Ignore titles, dates, numbering, and instructions. ' +
+        'For each word, also write one short, simple example sentence a child could use to understand what the word means, using the word naturally in the sentence. ' +
+        'Reply with ONLY a JSON array, like: [{"word": "elephant", "sentence": "The elephant sprayed water with its trunk."}]. ' +
+        'If you cannot find any words, reply with [].';
+      const result = await sample.json(prompt, { images: photoFile, modelTier: "default" });
+      const list = Array.isArray(result) ? result : [];
+      const words = list
+        .map(item => ({
+          word: String((item && item.word) || "").trim(),
+          sentence: String((item && item.sentence) || "").trim()
+        }))
+        .filter(item => item.word);
+      if (!words.length) {
+        toast("Couldn't find any words in that photo — try a clearer shot or type them instead.");
+      } else {
+        reviewWords = words;
+        renderReviewTable();
+        toast("Found " + words.length + " word" + (words.length === 1 ? "" : "s"));
+      }
+    } catch (e) {
+      const code = e && e.code;
+      if (code === "not_granted") toast("Photo reading needs permission — try again and allow access.");
+      else if (code === "images_unavailable") toast("This view can't send photos to Claude.");
+      else if (code === "image_rejected") toast("That photo couldn't be used — try a different one.");
+      else toast("Couldn't read that photo. Try again or type the words instead.");
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "✨ Read words from photo";
+    }
+  });
+
+  function renderReviewTable() {
+    document.getElementById("reviewSection").hidden = false;
+    const tbody = document.getElementById("reviewTbody");
+    tbody.innerHTML = "";
+    reviewWords.forEach((item, i) => addReviewRow(item, i));
+    document.getElementById("reviewSection").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  function addReviewRow(item, i) {
+    const tbody = document.getElementById("reviewTbody");
+    const tr = document.createElement("tr");
+    tr.innerHTML =
+      '<td class="num-col">' + (i + 1) + '</td>' +
+      '<td><input type="text" class="w-word" value="' + escapeAttr(item.word) + '"></td>' +
+      '<td><input type="text" class="w-sentence" value="' + escapeAttr(item.sentence || "") + '" placeholder="—"></td>' +
+      '<td class="del-col"><button class="row-del" aria-label="Remove word">✕</button></td>';
+    tr.querySelector(".row-del").addEventListener("click", () => { tr.remove(); });
+    tbody.appendChild(tr);
+  }
+  function escapeAttr(s) { return escapeHtml(s).replace(/"/g, "&quot;"); }
+
+  document.getElementById("btnAddRow").addEventListener("click", () => {
+    if (document.getElementById("reviewSection").hidden) renderReviewTable();
+    addReviewRow({ word: "", sentence: "" }, document.getElementById("reviewTbody").children.length);
+  });
+
+  document.getElementById("btnSuggestSentences").addEventListener("click", async () => {
+    if (!sample) return;
+    const rows = Array.from(document.getElementById("reviewTbody").children);
+    const words = rows.map(r => r.querySelector(".w-word").value.trim());
+    const missingIdx = words.map((w, i) => (w && !rows[i].querySelector(".w-sentence").value.trim()) ? i : -1).filter(i => i >= 0);
+    if (!missingIdx.length) { toast("Every word already has a sentence"); return; }
+    const btn = document.getElementById("btnSuggestSentences");
+    btn.disabled = true;
+    btn.textContent = "Thinking…";
+    try {
+      const target = missingIdx.map(i => words[i]);
+      const prompt = 'Write one short, simple example sentence for each of these spelling words, using each word naturally so a child understands its meaning. ' +
+        'Reply with ONLY a JSON array of strings, in the same order, one sentence per word:\n' + JSON.stringify(target);
+      const sentences = await sample.json(prompt, { modelTier: "quick" });
+      if (Array.isArray(sentences)) {
+        missingIdx.forEach((rowIdx, k) => {
+          if (sentences[k]) rows[rowIdx].querySelector(".w-sentence").value = String(sentences[k]);
+        });
+        toast("Sentences added");
+      }
+    } catch (e) {
+      toast("Couldn't generate sentences right now.");
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "✨ Suggest sentences";
+    }
+  });
+
+  document.getElementById("btnSaveList").addEventListener("click", async () => {
+    const name = document.getElementById("listNameInput").value.trim() || "Untitled list";
+    const rows = Array.from(document.getElementById("reviewTbody").children);
+    const words = rows.map(r => ({
+      word: r.querySelector(".w-word").value.trim(),
+      sentence: r.querySelector(".w-sentence").value.trim()
+    })).filter(w => w.word);
+    if (!words.length) { toast("Add at least one word before saving"); return; }
+    await Store.saveList({ name, words });
+    toast("Saved “" + name + "”");
+    showScreen("home");
+  });
+
+  /* ================= PRACTICE ================= */
+  let session = null; // { list, order:[{word,sentence}], idx, answers:[] }
+
+  function shuffle(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  let masterBatch = null;
+  function startPractice(list, wordsOverride) {
+    if (list.builtin && !wordsOverride) {
+      // Use the batch prepared in advance so speech still starts inside the tap (iPad).
+      const words = masterBatch || shuffle(MASTER_LIST.words).slice(0, getTestSize());
+      masterBatch = null;
+      prepareMasterBatch();
+      return startPractice(list, words);
+    }
+    const words = wordsOverride || list.words || [];
+    if (!words.length) { toast("This list has no words"); return; }
+    session = { list, order: shuffle(words), idx: 0, answers: [] };
+    showScreen("practice");
+    renderPracticeWord();
+  }
+
+  function renderPracticeWord() {
+    const total = session.order.length;
+    const cur = session.order[session.idx];
+    document.getElementById("progressLabel").textContent = "WORD " + (session.idx + 1) + " OF " + total;
+    document.getElementById("progressFill").style.width = Math.round((session.idx / total) * 100) + "%";
+    document.getElementById("answerInput").value = "";
+    document.getElementById("btnSentence").hidden = !cur.sentence;
+    document.getElementById("btnSubmitWord").textContent = (session.idx === total - 1) ? "Finish" : "Next →";
+    // Speak immediately (same tap that got us here) so iPad Safari allows it;
+    // focusing the input can happen a beat later without affecting audio.
+    speak(cur.word);
+    setTimeout(() => { document.getElementById("answerInput").focus(); }, 50);
+  }
+
+  document.getElementById("btnSpeak").addEventListener("click", () => {
+    if (session) speak(session.order[session.idx].word);
+  });
+  document.getElementById("btnSentence").addEventListener("click", () => {
+    if (session) speak(session.order[session.idx].sentence, { rate: Math.min(1, chosenRate() + 0.1) });
+  });
+
+  function submitCurrentWord() {
+    const typed = document.getElementById("answerInput").value.trim();
+    const cur = session.order[session.idx];
+    session.answers.push({ word: cur.word, sentence: cur.sentence, typed, correct: typed.toLowerCase() === cur.word.toLowerCase() });
+    if (session.idx < session.order.length - 1) {
+      session.idx++;
+      renderPracticeWord();
+    } else {
+      finishPractice();
+    }
+  }
+  document.getElementById("btnSubmitWord").addEventListener("click", submitCurrentWord);
+  document.getElementById("answerInput").addEventListener("keydown", e => {
+    if (e.key === "Enter") { e.preventDefault(); submitCurrentWord(); }
+  });
+  document.getElementById("btnQuitPractice").addEventListener("click", () => {
+    window.speechSynthesis && window.speechSynthesis.cancel();
+    showScreen("home");
+  });
+
+  async function finishPractice() {
+    window.speechSynthesis && window.speechSynthesis.cancel();
+    const total = session.answers.length;
+    const correct = session.answers.filter(a => a.correct).length;
+    const missed = session.answers.filter(a => !a.correct);
+    document.getElementById("resultScore").textContent = correct + " / " + total;
+    document.getElementById("resultPct").textContent = Math.round((correct / total) * 100) + "% correct";
+
+    const reviewWrap = document.getElementById("reviewList");
+    reviewWrap.innerHTML = "";
+    document.getElementById("resultReviewWrap").hidden = missed.length === 0;
+    if (missed.length === 0) {
+      reviewWrap.innerHTML = '<div class="empty" style="padding:26px;"><div class="glyph">🎉</div>Perfect score — every word spelled correctly!</div>';
+    } else {
+      missed.forEach(m => {
+        const row = document.createElement("div");
+        row.className = "review-row";
+        row.innerHTML =
+          '<span class="badge">✗</span>' +
+          '<div><span class="lbl">You typed</span><span class="typed">' + escapeHtml(m.typed || "(blank)") + '</span></div>' +
+          '<div><span class="lbl">Correct spelling</span><span class="correct">' + escapeHtml(m.word) + '</span></div>';
+        reviewWrap.appendChild(row);
+      });
+    }
+
+    document.getElementById("btnRetryMissed").hidden = missed.length === 0;
+    document.getElementById("btnRetryAll").textContent = session.list.builtin ? "Next " + getTestSize() + " words" : "Practice full list again";
+    document.getElementById("btnRetryAll").onclick = () => startPractice(session.list);
+    document.getElementById("btnRetryMissed").onclick = () => startPractice(session.list, missed.map(m => ({ word: m.word, sentence: m.sentence })));
+
+    await Store.addSession({
+      listId: session.list.id,
+      listName: session.list.name,
+      date: new Date().toISOString(),
+      total,
+      correct,
+      missed: missed.map(m => ({ word: m.word, typed: m.typed })),
+      tested: session.answers.filter(a => a.correct).map(a => a.word)
+    });
+    if (session.list.builtin) prepareMasterBatch();
+
+    showScreen("results");
+  }
+
+  /* ================= HISTORY ================= */
+  let currentHistoryListId = null;
+
+  async function renderHistoryPicker() {
+    const lists = await Store.listLists();
+    const picker = document.getElementById("historyPicker");
+    picker.innerHTML = "";
+    if (!lists.length) {
+      document.getElementById("historyEmpty").hidden = false;
+      document.getElementById("historyContent").hidden = true;
+      return;
+    }
+    document.getElementById("historyEmpty").hidden = true;
+    if (!currentHistoryListId || !lists.find(l => l.id === currentHistoryListId)) {
+      currentHistoryListId = lists[0].id;
+    }
+    lists.forEach(list => {
+      const b = document.createElement("button");
+      b.className = "tab";
+      b.setAttribute("aria-selected", list.id === currentHistoryListId);
+      b.textContent = list.name;
+      b.addEventListener("click", () => { currentHistoryListId = list.id; renderHistoryPicker(); });
+      picker.appendChild(b);
+    });
+    await renderHistoryContent(currentHistoryListId);
+  }
+
+  async function renderHistoryContent(listId) {
+    const sessions = await Store.listSessions(listId);
+    const content = document.getElementById("historyContent");
+    if (!sessions.length) {
+      content.hidden = true;
+      document.getElementById("historyEmpty").hidden = false;
+      return;
+    }
+    content.hidden = false;
+    document.getElementById("historyEmpty").hidden = true;
+
+    const tbody = document.getElementById("sessionTbody");
+    tbody.innerHTML = "";
+    sessions.slice().reverse().forEach(s => {
+      const tr = document.createElement("tr");
+      const pct = Math.round((s.correct / s.total) * 100);
+      const dateStr = new Date(s.date).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
+      const missedWords = (s.missed || []).map(m => m.word).join(", ") || "—";
+      tr.innerHTML =
+        '<td>' + dateStr + '</td>' +
+        '<td class="mono">' + s.correct + '/' + s.total + ' (' + pct + '%)</td>' +
+        '<td>' + escapeHtml(missedWords) + '</td>';
+      tbody.appendChild(tr);
+    });
+
+    document.getElementById("trendChart").innerHTML = buildTrendChart(sessions);
+  }
+
+  function buildTrendChart(sessions) {
+    const w = 800, h = 180, padL = 34, padR = 16, padT = 16, padB = 26;
+    const plotW = w - padL - padR, plotH = h - padT - padB;
+    const pts = sessions.map(s => Math.round((s.correct / s.total) * 100));
+    const n = pts.length;
+    const x = i => padL + (n === 1 ? plotW / 2 : (i / (n - 1)) * plotW);
+    const y = v => padT + plotH - (v / 100) * plotH;
+
+    const gridLines = [0, 50, 100].map(v =>
+      '<line x1="' + padL + '" x2="' + (w - padR) + '" y1="' + y(v) + '" y2="' + y(v) + '" stroke="var(--border)" stroke-width="1"></line>' +
+      '<text x="' + (padL - 8) + '" y="' + (y(v) + 4) + '" text-anchor="end" font-size="11" fill="var(--ink-muted)" font-family="JetBrains Mono, monospace">' + v + '%</text>'
+    ).join("");
+
+    let path = "";
+    let area = "M " + x(0) + " " + y(0) + " ";
+    pts.forEach((v, i) => {
+      path += (i === 0 ? "M " : "L ") + x(i) + " " + y(v) + " ";
+      area += "L " + x(i) + " " + y(v) + " ";
+    });
+    area += "L " + x(n - 1) + " " + y(0) + " Z";
+
+    const dots = pts.map((v, i) => {
+      const isLast = i === n - 1;
+      return '<circle cx="' + x(i) + '" cy="' + y(v) + '" r="' + (isLast ? 5 : 3) + '" fill="var(--accent)" stroke="var(--surface)" stroke-width="' + (isLast ? 2 : 1) + '"></circle>';
+    }).join("");
+
+    const lastLabel = '<text x="' + x(n - 1) + '" y="' + (y(pts[n - 1]) - 12) + '" text-anchor="end" font-size="12" font-weight="700" fill="var(--accent)" font-family="JetBrains Mono, monospace">' + pts[n - 1] + '%</text>';
+
+    return '<svg viewBox="0 0 ' + w + ' ' + h + '" style="width:100%; height:auto; display:block;" role="img" aria-label="Score trend chart">' +
+      gridLines +
+      '<path d="' + area + '" fill="var(--accent)" opacity="0.12"></path>' +
+      '<path d="' + path + '" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"></path>' +
+      dots + lastLabel +
+      '</svg>';
+  }
+
+  function prepareMasterBatch() { pickMasterBatch(getTestSize()).then(b => { masterBatch = b; }); }
+  document.addEventListener("change", e => { if (e.target.closest && e.target.closest(".size-row")) prepareMasterBatch(); });
+
+  /* ================= boot ================= */
+  initCapabilities();
+  renderHome();
+  prepareMasterBatch();
+  checkForImportLink();
+})();
+</script>
+
+</body></html>
